@@ -6,7 +6,6 @@ document.querySelectorAll('[data-sail]').forEach(el=>el.addEventListener('click'
 window.enableReadingView=()=>{window.dispatchEvent(new Event('voyage-navigate'));document.body.classList.remove('exploring');document.body.classList.add('reading-view');document.querySelector('main').inert=false;document.getElementById('loading').hidden=true;document.getElementById('simple-view').textContent=document.body.dataset.render==='ready'?'Return to voyage':'Reading view';};document.getElementById('simple-view').addEventListener('click',()=>{if(document.body.classList.contains('reading-view')&&document.body.dataset.render==='ready'){document.body.classList.remove('reading-view');document.getElementById('simple-view').textContent='Reading view';window.dispatchEvent(new Event('voyage-resume'));}else window.enableReadingView()});
 document.querySelector('.skip-link').addEventListener('click',()=>{window.enableReadingView();document.querySelector('main').tabIndex=-1;document.querySelector('main').focus()});
 })();
-(()=>{const update=()=>document.body.style.setProperty('--reading-top',(scrollY+innerHeight*.48)+'px');addEventListener('scroll',update,{passive:true});addEventListener('resize',update);update()})();
-// Keep keyboard-focused links inside the mobile reading area.
-document.querySelector('main').addEventListener('focusin',e=>{if(innerWidth>=700||document.body.classList.contains('reading-view')||!e.target.matches(':focus-visible'))return;const y=e.target.getBoundingClientRect().top;if(y<innerHeight*.5)scrollBy(0,y-innerHeight*.58)});
+
+
 document.getElementById('crew-close').addEventListener('click',()=>document.getElementById('crew-open').focus({preventScroll:true}));

@@ -4,10 +4,10 @@ import {createStrawHats} from './straw-hats.js';
 const host=document.querySelector('#scene');
 let renderer;
 try{renderer=new T.WebGLRenderer({antialias:true,powerPreference:'high-performance'});}catch(error){document.querySelector('#loading').hidden=true;window.enableReadingView();throw error;}
-const mobile=()=>innerWidth<700;
-renderer.setPixelRatio(Math.min(devicePixelRatio,mobile()?1.25:1.7));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;host.append(renderer.domElement);host.tabIndex=0;
+const mobile=()=>matchMedia('(max-width:700px), (max-height:500px) and (pointer:coarse)').matches;
+renderer.setPixelRatio(Math.min(devicePixelRatio,mobile()?1.25:1.7));renderer.setSize(mobile()?host.clientWidth:innerWidth,mobile()?host.clientHeight:innerHeight);renderer.outputColorSpace=T.SRGBColorSpace;renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;host.append(renderer.domElement);host.tabIndex=0;
 const scene=new T.Scene();scene.background=new T.Color('#b7dedb');scene.fog=new T.Fog('#b7dedb',90,240);
-const camera=new T.PerspectiveCamera(42,innerWidth/innerHeight,.1,450);
+const camera=new T.PerspectiveCamera(42,(mobile()?host.clientWidth/host.clientHeight:innerWidth/innerHeight),.1,450);
 scene.add(new T.HemisphereLight('#ffedcf','#448eb0',1.15));const sun=new T.DirectionalLight('#fff0d8',2.1);sun.position.set(-25,50,30);scene.add(sun);renderer.shadowMap.enabled=!mobile();renderer.shadowMap.type=T.PCFSoftShadowMap;sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-35,right:35,top:35,bottom:-35,near:1,far:100});sun.shadow.bias=-.0005;sun.shadow.normalBias=.04;scene.add(sun.target);
 const inkBands=new T.DataTexture(new Uint8Array([60,145,220,255]),4,1,T.RedFormat);inkBands.minFilter=inkBands.magFilter=T.NearestFilter;inkBands.needsUpdate=true;
 const mats={};const mat=(color)=>mats[color]??(mats[color]=new T.MeshToonMaterial({color,gradientMap:inkBands}));
@@ -159,7 +159,7 @@ function paint(now){
  frame=0;if(document.hidden||document.body.classList.contains('reading-view')||document.body.classList.contains('artifact-opened'))return;
  const dt=Math.min((now-last)/1000,.05)||.016;last=now;progress=targetProgress;
  const sy=scrollY,t=progress;scrollEnergy=moving?T.MathUtils.damp(scrollEnergy,Math.min(1,Math.abs(sy-previousScroll)/80),18,dt):0;previousScroll=sy;
- let index=0;for(let i=0;i<chapters.length;i++)if(sy>=chapters[i].offsetTop-2)index=i;
+ let index=0;for(let i=0;i<chapters.length;i++)if(sy+(mobile()?host.getBoundingClientRect().bottom+28:0)>=chapters[i].offsetTop-2)index=i;
  const current=stops[index],next=stops[Math.min(index+1,stops.length-1)],length=chapters[index].offsetHeight;
  const local=T.MathUtils.clamp((sy-chapters[index].offsetTop)/length,0,1);
  const departure=Math.max(innerHeight*.7,length-innerHeight*.8);
@@ -175,11 +175,13 @@ function paint(now){
  skyTerraces.visible=index===3;trail.visible=index!==3;
  if(moving&&!exploring){const orbit=camPos.clone().sub(lookAt);orbit.applyAxisAngle(new T.Vector3(0,1,0),Math.sin(local*Math.PI)*(index===1?.34:index===2?.4:.13));camPos.copy(lookAt).add(orbit);}
  const sunset=index===5?1:index===4?blend:0;scene.background.set('#b7dedb').lerp(new T.Color('#efc6a2'),sunset);scene.fog.color.copy(scene.background);
- if(mobile()){camPos.y+=6;camPos.z+=8;}
+ if(mobile()){camPos.y+=6;camPos.z+=8;lookAt.lerp(tmp.copy(ship.position).add(new T.Vector3(0,5,0)),.2); }
  if(inspectShip){lookAt.copy(ship.position).add(new T.Vector3(0,3.3,0));camPos.copy(ship.position).add(new T.Vector3(mobile()?17:16,12,mobile()?25:22).applyAxisAngle(new T.Vector3(0,1,0),ship.rotation.y));}
  if(exploring){const offset=camPos.clone().sub(lookAt);const sph=new T.Spherical().setFromVector3(offset);sph.theta+=yaw;sph.phi=T.MathUtils.clamp(sph.phi+pitch,.2,1.45);camPos.copy(lookAt).add(offset.setFromSpherical(sph));}
  if(crewFocus>=0){const person=crew[crewFocus];ship.updateWorldMatrix(true,true);person.getWorldPosition(lookAt);lookAt.y+=.7*person.scale.y;camPos.copy(lookAt).add(new T.Vector3((person.position.x<0?-1:1)*3.1*Math.cos(yaw),2.1+pitch,1+Math.sin(yaw)*2.5).applyAxisAngle(new T.Vector3(0,1,0),ship.rotation.y));}
- if(exploring)camera.clearViewOffset();else camera.setViewOffset(innerWidth,innerHeight,mobile()?0:-innerWidth*.23*(window.voyageComposition??1),mobile()?innerHeight*.23:0,innerWidth,innerHeight);
+ const vw=mobile()?host.clientWidth:innerWidth,vh=mobile()?host.clientHeight:innerHeight;
+ if(renderer.domElement.clientHeight!==vh||Math.abs(camera.aspect-vw/vh)>.001){renderer.setSize(vw,vh);camera.aspect=vw/vh;camera.updateProjectionMatrix();}
+ if(exploring||mobile())camera.clearViewOffset();else camera.setViewOffset(vw,vh,-vw*.23*(window.voyageComposition??1),0,vw,vh);
  camera.position.copy(camPos);camera.lookAt(lookAt);camera.updateMatrixWorld();sun.target.position.copy(lookAt);sun.position.copy(lookAt).add(new T.Vector3(-25,42,25));
  if(moving){waterMat.uniforms.time.value=now*.00085;blades.rotation.z=now*.0003;falls.forEach((f,i)=>{f.scale.x=.9+Math.sin(now*.003+i)*.1;});}
  clouds.forEach((c,i)=>{c.position.copy(c.userData.origin);c.position.x+=lookAt.x+(moving?Math.sin(now*.00009+i)*7:0);c.position.z+=lookAt.z-25;});
@@ -198,7 +200,7 @@ document.getElementById('crew-open').addEventListener('click',()=>showCrew(0));c
 document.querySelector('#inspect-sunny').addEventListener('click',()=>{crewFocus=-1;document.getElementById('crew-panel').hidden=true;inspectShip=!inspectShip;yaw=0;pitch=0;setExplore(inspectShip)});
 document.querySelector('#look').addEventListener('click',()=>setExplore(!exploring));document.querySelector('#reset').addEventListener('click',()=>{yaw=0;pitch=0;requestFrame()});host.addEventListener('pointerdown',e=>{if(!exploring)return;drag={x:e.clientX,y:e.clientY};host.setPointerCapture(e.pointerId)});host.addEventListener('pointermove',e=>{if(!drag)return;yaw-=(e.clientX-drag.x)*.006;pitch-=(e.clientY-drag.y)*.004;pitch=T.MathUtils.clamp(pitch,-.6,.6);drag={x:e.clientX,y:e.clientY};requestFrame()});host.addEventListener('pointerup',()=>drag=null);host.addEventListener('pointercancel',()=>drag=null);
 addEventListener('keydown',e=>{if(e.target.matches('select,input,textarea,button')){if(e.key==='Escape')setExplore(false);return}if(e.key==='Escape')setExplore(false);if(exploring&&['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){e.preventDefault();if(e.key==='ArrowLeft')yaw+=.1;if(e.key==='ArrowRight')yaw-=.1;if(e.key==='ArrowUp')pitch-=.06;if(e.key==='ArrowDown')pitch+=.06;requestFrame()}});
-window.addEventListener('voyage-navigate',()=>setExplore(false));function setMotion(v){moving=v;document.documentElement.classList.toggle('still',!v);document.querySelector('#motion').setAttribute('aria-pressed',String(v));document.querySelector('#motion').textContent=v?'Motion on':'Motion off';requestFrame()};document.querySelector('#motion').addEventListener('click',()=>setMotion(!moving));pref.addEventListener('change',()=>setMotion(!pref.matches));addEventListener('scroll',readScroll,{passive:true});addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,mobile()?1.25:1.7));renderer.setSize(innerWidth,innerHeight);readScroll()});document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestFrame()});renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();moving=false;window.enableReadingView();});setMotion(moving);readScroll();document.querySelector('#loading').hidden=true;document.body.dataset.render='ready';
+window.addEventListener('voyage-navigate',()=>setExplore(false));function setMotion(v){moving=v;document.documentElement.classList.toggle('still',!v);document.querySelector('#motion').setAttribute('aria-pressed',String(v));document.querySelector('#motion').textContent=v?'Motion on':'Motion off';requestFrame()};document.querySelector('#motion').addEventListener('click',()=>setMotion(!moving));pref.addEventListener('change',()=>setMotion(!pref.matches));addEventListener('scroll',readScroll,{passive:true});addEventListener('resize',()=>{camera.aspect=(mobile()?host.clientWidth/host.clientHeight:innerWidth/innerHeight);camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,mobile()?1.25:1.7));renderer.shadowMap.enabled=!mobile();renderer.setSize(mobile()?host.clientWidth:innerWidth,mobile()?host.clientHeight:innerHeight);readScroll()});document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestFrame()});renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();moving=false;window.enableReadingView();});setMotion(moving);readScroll();document.querySelector('#loading').hidden=true;document.body.dataset.render='ready';
 window.addEventListener('voyage-resume',()=>{last=0;readScroll()});
 // Read-only diagnostics used for verifying that the prototype renders real geometry.
 window.voyageDiagnostics=()=>({progress,destination:document.body.dataset.destination,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,crew:crew.map(p=>p.name),crewFocus,exploring,inspectShip,yaw,pitch,moving,cameraHeight:camera.position.y});

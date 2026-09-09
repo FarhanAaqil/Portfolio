@@ -1,0 +1,320 @@
+{
+  "projects": [
+    {
+      "id": "sheetsense-ai",
+      "title": "SheetSense AI",
+      "description": "Conversational AI agent over live spreadsheet data — users retrieve and update Google Sheets through plain English, removing the need for SQL queries or spreadsheet formulas entirely.",
+      "technologies": [
+        "Python",
+        "LangChain",
+        "Google Sheets API",
+        "FastAPI",
+        "RAG"
+      ],
+      "github": "https://github.com/FarhanAaqil/Sheet-AI",
+      "demo": null,
+      "screenshot": {
+        "src": "assets/projects/sheetsense-ai.png",
+        "alt": "SheetSense AI — visual analytics and spreadsheet assistant",
+        "caption": "SheetSense AI — visual analytics and spreadsheet assistant",
+        "width": 1920,
+        "height": 912
+      },
+      "secondaryScreenshots": [],
+      "highlights": [],
+      "prominence": "standard",
+      "status": "ready"
+    },
+    {
+      "id": "interviewpro",
+      "title": "InterviewPro",
+      "description": "AI-powered interview preparation platform using the Claude API — generates role-specific interview questions and delivers structured feedback on user responses in real time.",
+      "technologies": [
+        "React",
+        "Claude API",
+        "Node.js",
+        "Session Persistence"
+      ],
+      "github": "https://github.com/FarhanAaqil/interviewpro",
+      "demo": "https://claude.ai/public/artifacts/367d3360-5eab-4ff9-afe4-73b7c3050802",
+      "screenshot": {
+        "src": "assets/projects/interviewpro.png",
+        "alt": "InterviewPro — guided NumPy and Pandas practice",
+        "caption": "InterviewPro — guided NumPy and Pandas practice",
+        "width": 1916,
+        "height": 812
+      },
+      "secondaryScreenshots": [],
+      "highlights": [],
+      "prominence": "standard",
+      "status": "ready"
+    },
+    {
+      "id": "self-improving-ai-agent",
+      "title": "Self-Improving AI Agent",
+      "description": "An AI coding agent that generates Python, repairs failed executions, and uses vector memory to learn from past failures. Evolved a Streamlit prototype with a FastAPI backend for generation, execution, run history, and evaluation.",
+      "technologies": [
+        "Python",
+        "FastAPI",
+        "Groq",
+        "ChromaDB",
+        "SQLite",
+        "Streamlit"
+      ],
+      "github": "https://github.com/FarhanAaqil/self-improving-agent",
+      "demo": "https://self-improving-agent.streamlit.app/",
+      "screenshot": {
+        "src": "assets/projects/self-improving-ai-agent.png",
+        "alt": "Self-Improving AI Agent — task specification and code verification pipeline",
+        "caption": "Self-Improving AI Agent — new run and verification ledger",
+        "width": 1920,
+        "height": 912
+      },
+      "secondaryScreenshots": [],
+      "highlights": [],
+      "prominence": "standard",
+      "status": "ready"
+    },
+    {
+      "id": "gateorchestra",
+      "title": "GateOrchestra",
+      "description": "Capstone project — a token-budget-calibrated gating layer for multi-agent orchestration, built as part of a 4-person team.",
+      "technologies": [
+        "Python",
+        "Groq (Llama 3.3 70B)",
+        "Multi-Agent Systems",
+        "Capstone"
+      ],
+      "github": "https://github.com/FarhanAaqil/GateOrchestra",
+      "demo": null,
+      "screenshot": {
+        "src": "assets/projects/gateorchestra.png",
+        "alt": "GateOrchestra — query routing and orchestration dashboard",
+        "caption": "GateOrchestra — query routing and orchestration dashboard",
+        "width": 1536,
+        "height": 1024
+      },
+      "secondaryScreenshots": [],
+      "highlights": [],
+      "prominence": "standard",
+      "status": "ready"
+    },
+    {
+      "id": "orchestrator-agent",
+      "title": "Orchestrator Agent",
+      "description": "A multi-agent personal AI system with 10+ specialized agents coordinated by a Master Orchestrator. Uses Groq’s free tier, ChromaDB and SQLite, with human approval required before anything sends or publishes.",
+      "technologies": [
+        "Python",
+        "Groq",
+        "LangChain",
+        "ChromaDB",
+        "SQLite",
+        "APScheduler"
+      ],
+      "github": "https://github.com/FarhanAaqil/orchestrator_agent",
+      "demo": null,
+      "screenshot": {
+        "src": "assets/projects/orchestrator-agent.png",
+        "alt": "Orchestrator Agent — Aaqil AI system dashboard",
+        "caption": "Orchestrator Agent — Aaqil AI system dashboard",
+        "width": 1918,
+        "height": 1025
+      },
+      "secondaryScreenshots": [],
+      "highlights": [
+        "Cross-agent consultation, resume-based job scoring and semantic deduplication",
+        "Multi-turn memory with summarization",
+        "Human-in-the-loop approval gate for outbound actions"
+      ],
+      "prominence": "standard",
+      "status": "ready"
+    },
+    {
+      "id": "genai-lab",
+      "title": "GenAI Lab",
+      "description": "A browser-based platform for learning generative AI through 14 hands-on modules, a CodeMirror editor, and streaming AI mentor feedback. Learner progress is stored locally in the browser.",
+      "technologies": [
+        "React",
+        "JavaScript",
+        "CodeMirror",
+        "Gemini API",
+        "SSE",
+        "Vercel"
+      ],
+      "github": "https://github.com/FarhanAaqil/genai-lab",
+      "demo": "https://genai-lab-psi.vercel.app",
+      "screenshot": {
+        "src": "assets/projects/genai-lab.png",
+        "alt": "GenAI Lab — curriculum and hands-on learning",
+        "caption": "GenAI Lab — curriculum and hands-on learning",
+        "width": 1920,
+        "height": 912
+      },
+      "secondaryScreenshots": [],
+      "highlights": [
+        "Interactive coding exercises with AI mentor feedback",
+        "Serverless API with input validation and request metrics"
+      ],
+      "prominence": "standard",
+      "status": "ready",
+      "sources": [
+        "https://github.com/FarhanAaqil/genai-lab/blob/main/README.md",
+        "https://github.com/FarhanAaqil/genai-lab/blob/main/package.json",
+        "https://github.com/FarhanAaqil/genai-lab/blob/main/api/chat.js"
+      ]
+    },
+    {
+      "id": "cohere-aegis",
+      "title": "Cohere Aegis",
+      "description": "A workforce operations platform bringing attendance, timesheets, leave, shifts and team oversight into a role-aware dashboard, with a Chrome extension for clock-in monitoring.",
+      "technologies": [
+        "React",
+        "TypeScript",
+        "Supabase",
+        "PostgreSQL",
+        "Tailwind CSS",
+        "WebRTC",
+        "Chrome Manifest V3"
+      ],
+      "github": "https://github.com/farhansldm/LC-Monitor",
+      "demo": null,
+      "screenshot": {
+        "src": "assets/projects/cohere-aegis.png",
+        "alt": "Cohere Aegis — Lemon Host Monitor workforce dashboard",
+        "caption": "Cohere Aegis — Lemon Host Monitor workforce dashboard",
+        "width": 1919,
+        "height": 922
+      },
+      "secondaryScreenshots": [],
+      "highlights": [
+        "Employee, manager, HR and admin workflows",
+        "Realtime chat, calls and task management"
+      ],
+      "prominence": "standard",
+      "status": "ready",
+      "sources": [
+        "https://github.com/farhansldm/LC-Monitor/blob/main/README.md",
+        "https://github.com/farhansldm/LC-Monitor/blob/main/package.json"
+      ]
+    },
+    {
+      "id": "rankforge",
+      "title": "RankForge",
+      "description": "An SEO agency platform for managing clients, websites, keywords, audits and reporting. Combines a React interface with an Express API and PostgreSQL data model, with Redis-backed audit job dispatch.",
+      "technologies": [
+        "React",
+        "JavaScript",
+        "Node.js",
+        "Express.js",
+        "PostgreSQL",
+        "Prisma",
+        "Redis",
+        "BullMQ"
+      ],
+      "github": "https://github.com/farhansldm/SLDM-seo",
+      "demo": null,
+      "screenshot": {
+        "src": "assets/projects/rankforge.png",
+        "alt": "RankForge — SEOPro command center",
+        "caption": "RankForge — SEOPro command center",
+        "width": 1672,
+        "height": 941
+      },
+      "secondaryScreenshots": [],
+      "highlights": [
+        "Agency, client and website data relationships",
+        "Keyword, competitor and audit workflows"
+      ],
+      "prominence": "standard",
+      "status": "ready",
+      "sources": [
+        "https://github.com/farhansldm/SLDM-seo/blob/main/package.json",
+        "https://github.com/farhansldm/SLDM-seo/blob/main/prisma/schema.prisma",
+        "https://github.com/farhansldm/SLDM-seo/blob/main/server/index.js"
+      ]
+    }
+  ],
+  "certifications": [
+    {
+      "issuer": "Anthropic",
+      "title": "Introduction to Agent Skills"
+    },
+    {
+      "issuer": "Anthropic",
+      "title": "Building with the Claude API"
+    },
+    {
+      "issuer": "Anthropic",
+      "title": "AI Fluency: Framework & Foundations"
+    },
+    {
+      "issuer": "Anthropic",
+      "title": "AI Fluency for Students"
+    },
+    {
+      "issuer": "Apna College",
+      "title": "Full Stack Web Development"
+    },
+    {
+      "issuer": "NPTEL (IIT)",
+      "title": "Database Management Systems"
+    },
+    {
+      "issuer": "SkillUp",
+      "title": "Python for Data Analysis"
+    },
+    {
+      "issuer": "SkillUp",
+      "title": "C++ Programming"
+    }
+  ],
+  "skills": [
+    [
+      "Languages",
+      "Python · JavaScript · TypeScript · Java · C/C++"
+    ],
+    [
+      "AI / Machine Learning",
+      "PyTorch · TensorFlow · scikit-learn · Hugging Face · Computer Vision · Model Evaluation · Statistical Modelling"
+    ],
+    [
+      "Generative AI",
+      "LLMs · Prompt Engineering · RAG · Embeddings · LLM APIs · Structured Outputs · Streaming · LLM Evaluation · Multimodal AI concepts · Fine-Tuning concepts · Guardrail concepts"
+    ],
+    [
+      "Agents & Orchestration",
+      "LangChain · Agentic Workflows · Tool Calling · ReAct concepts · Multi-Agent Systems · Agent Memory · Human-in-the-Loop · Orchestration"
+    ],
+    [
+      "Backend & API Engineering",
+      "FastAPI · Flask · Node.js · Express.js · REST APIs · Serverless Functions · SSE"
+    ],
+    [
+      "Frontend & Interfaces",
+      "React · JavaScript · Redux · Tailwind CSS · HTML/CSS · CodeMirror · TypeScript"
+    ],
+    [
+      "Data & Databases",
+      "Pandas · NumPy · Seaborn · Plotly · MySQL · MongoDB · SQLite · ChromaDB · Vector Search · PostgreSQL · Prisma"
+    ],
+    [
+      "Infrastructure & Deployment",
+      "Docker · CI/CD · AWS · GCP · Vercel · Supabase · Redis"
+    ],
+    [
+      "Real-time / Systems",
+      "Streaming responses · Observability · Request Metrics · Latency Monitoring · Supabase Realtime · WebRTC · Chrome Extensions / Manifest V3 · BullMQ"
+    ],
+    [
+      "Hardware",
+      "Arduino · Raspberry Pi"
+    ]
+  ],
+  "currentRole": {
+    "title": "AI Engineer Intern",
+    "company": "Sydney Leads Digital Marketing",
+    "dates": "Aug 2026–Present",
+    "location": "Remote",
+    "description": "Contributing to AI-powered applications, automation and LLM/ML solutions, alongside AI-assisted website development and deployment with the technical team."
+  }
+}

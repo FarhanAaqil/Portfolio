@@ -1,0 +1,10 @@
+# Scratch/work files from AI agent sessions - not part of portfolio
+how-best-this-model-is-x20-3/work/
+how-best-this-model-is-x20-3/outputs/
+
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db

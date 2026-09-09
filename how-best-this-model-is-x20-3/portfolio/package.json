@@ -1,0 +1,1 @@
+{"name":"farhan-scroll-world","private":true,"type":"module","scripts":{"build:content":"node build-content.mjs"}}

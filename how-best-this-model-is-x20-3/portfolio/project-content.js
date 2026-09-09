@@ -1,0 +1,2 @@
+// Shared content adapter: image paths and project links never enter the 3D engine.
+export function normalizeProjects(projects){return projects.map(p=>({...p,description:p.description||'Project details will be added once confirmed.',tags:p.technologies||p.tags||[],links:p.links||[...(p.github?[{label:'GitHub',url:p.github}]:[]),...(p.demo?[{label:'Live demo',url:p.demo}]:[])],media:p.media||[p.screenshot||{src:null,alt:p.title+' screenshot',caption:'Screenshot coming soon'},...(p.secondaryScreenshots||[])]}));}

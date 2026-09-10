@@ -1,6 +1,6 @@
 (() => {
  const mobile=matchMedia('(max-width:700px), (max-height:500px) and (pointer:coarse)');
- const horizon=()=>{const scene=document.getElementById('scene');return scene.getBoundingClientRect().bottom;};
+ const horizon=()=>{const scene=document.getElementById('scene');return document.querySelector('header').getBoundingClientRect().bottom;};
  let frame=0;
  function sync(){frame=0;if(mobile.matches)document.body.style.setProperty('--reading-top',(scrollY+horizon())+'px');}
  function schedule(){if(!frame)frame=requestAnimationFrame(sync);}
@@ -19,3 +19,5 @@
 })();
 // Direct destination links use the same visible heading alignment as chart navigation.
 addEventListener('load',()=>{const id=location.hash.slice(1);if(matchMedia('(max-width:700px), (max-height:500px) and (pointer:coarse)').matches && document.getElementById(id)?.classList.contains('chapter'))window.sailTo(id);},{once:true});
+// Keep exploration tools accessible from the phone's destination chart.
+(()=>{const row=document.createElement('div');row.className='mobile-chart-actions';for(const [label,id] of [['Meet the crew','crew-open'],['Explore the Sunny','inspect-sunny'],['Look around','look']]){const b=document.createElement('button');b.textContent=label;b.addEventListener('click',()=>{document.getElementById('map-dialog').close();document.getElementById(id).click();});row.append(b);}const a=document.createElement('a');a.href='Farhan_Aaqil_Resume_main.pdf';a.textContent='Download resume';a.download='';row.append(a);document.getElementById('map-dialog').append(row);})();

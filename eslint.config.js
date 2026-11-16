@@ -2,8 +2,8 @@ import js from '@eslint/js';
 import globals from 'globals';
 
 export default [
-  // Vendored three.js and the retired prototypes are not part of the live site.
-  {ignores: ['vendor/**', 'node_modules/**', 'Portfolio/**', 'anime-voyage.js', 'voyage3d.js', 'scroll.js', 'world.js', 'navigation.js', 'harbour-navigation.js']},
+  // Vendored three.js is checked in as-is.
+  {ignores: ['vendor/**', 'node_modules/**', 'Portfolio/**']},
   js.configs.recommended,
   {
     files: ['**/*.js'],

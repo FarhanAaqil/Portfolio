@@ -1,22 +1,60 @@
-# A Developer’s Voyage — Farhan Aaqil Durrani
+# A Developer's Voyage — Farhan Aaqil Durrani
 
-A complete One Piece-inspired redesign with Foosha Village, Reverse Mountain, Water 7, the Grand Line, Egghead, and the New World.
+My portfolio as a One Piece voyage. You scroll, the Thousand Sunny sails: Foosha Village, Reverse Mountain, Water 7, Skypiea, Egghead and the New World, one island per chapter, with the Straw Hats aboard.
 
-## Preview
-Open index.html, or serve the directory with any static web server. No build step or runtime dependencies are needed. Google Fonts are optional; local font fallbacks are included.
+Live: https://aaqilportfolio.vercel.app
 
-## Deploy
-Upload index.html, world.css, world.js, assets/, and Farhan_Aaqil_Resume_main.pdf together. This package has not been pushed to GitHub or published.
+## What's in it
 
-## Experience
-- Illustrated Foosha harbour and Egghead environments, optimized to approximately 650 KB combined.
-- Scroll-linked hero depth, a travelling ship route on desktop, destination indicator, and map dialog with direct chapter navigation.
-- Skills workshop, five project case studies with preserved interface illustrations and repository links, experience, publication, and seven expandable certifications.
-- Native scrolling, responsive layouts, short-view-height fallback for pinned projects, and system/manual reduced-motion controls.
-- Native dialog keyboard handling and focus restoration; all portfolio content is visible without JavaScript.
+- **A real-time 3D world** built with three.js and no model files. The ship, the ten crew members and all six islands are modelled in code, cel-shaded and ink-outlined.
+- **Skypiea holds the projects.** It opens with a ledger (repositories, every project, the best five), then walks through the five showcased projects with screenshots from their own repositories. The "Projects built" tile opens a logbook of everything, internship work first.
+- **The Sunny never flies.** She rides the Knock-Up Stream up to the White-White Sea, circles Skypiea once while the projects scroll past, and comes back down under a balloon octopus.
+- **Look around.** Orbit any island, inspect the ship, or meet the crew one by one.
+- **Reading view** and reduced-motion support, native dialogs, keyboard navigation, and all content readable with JavaScript off.
 
-## Content editing
-Edit index.html for text and links, world.css for the theme, and world.js for interaction behavior. Interface previews are illustrations retained from the original portfolio. Background artwork is generated One Piece fan art. The portfolio is an independent personal project.
+## Run it
+
+It is a static site with no build step.
+
+```bash
+python -m http.server 4173
+```
+
+Then open http://localhost:4173.
+
+## Edit the content
+
+Text for skills, projects, certifications and the current role lives in `content.json`. After changing it:
+
+```bash
+npm install
+npm run build:content
+```
+
+That rewrites the marked regions of `index.html`. Commit both files.
+
+## Project layout
+
+| Path | What it is |
+| --- | --- |
+| `index.html`, `world.css`, `voyage3d.css`, `showcase.css`, `mobile.css` | Page and styles |
+| `world-engine.js` | Renderer, sea, route and camera |
+| `scene/kit.js` | Modelling toolkit: cel materials, primitives, batching, ink outlines |
+| `scene/props.js` | Terrain, running water, houses, trees, signs |
+| `scene/sunny.js`, `scene/crew.js` | The Thousand Sunny and the Straw Hats |
+| `scene/islands/` | One module per island |
+| `showcase.js`, `world-navigation.js`, `mobile.js` | Project dialogs, navigation, phone layout |
+| `content.json`, `build-content.mjs` | Content and the script that renders it into the page |
+| `vendor/` | three.js (MIT) |
 
 ## Checks
-Verified desktop 1440×1000 and mobile 390×844, plus overflow at 320px. All six destinations update correctly. Map selection, Escape dismissal, manual/system reduced motion, certification expansion, and resume delivery pass. No browser JavaScript errors reported. Checked content visibility with JavaScript disabled. Testing used Chromium/Edge; other browser engines were not tested.
+
+```bash
+npm run check
+```
+
+Runs ESLint, confirms `index.html` matches `content.json`, and verifies every local file the page references exists. The same checks run in GitHub Actions on every push.
+
+## Credits
+
+A personal, non-commercial fan project. One Piece and its characters belong to Eiichiro Oda, Shueisha and Toei Animation. All 3D models here were written from scratch for this site.

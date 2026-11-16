@@ -1,6 +1,7 @@
-import * as T from './vendor/three.module.js';
 import {mergeGeometries} from './vendor/BufferGeometryUtils.js';
-import {createStrawHats} from './straw-hats.js';
+import {T, createKit, rand, inkFog} from './scene/kit.js';
+import {buildSunny} from './scene/sunny.js';
+import {createStrawHats} from './scene/crew.js';
 const host=document.querySelector('#scene');
 let renderer;
 try{renderer=new T.WebGLRenderer({antialias:true,powerPreference:'high-performance'});}catch(error){document.querySelector('#loading').hidden=true;window.enableReadingView();throw error;}
@@ -9,14 +10,7 @@ renderer.setPixelRatio(Math.min(devicePixelRatio,mobile()?1.25:1.7));renderer.se
 const scene=new T.Scene();scene.background=new T.Color('#b7dedb');scene.fog=new T.Fog('#b7dedb',90,240);
 const camera=new T.PerspectiveCamera(42,(mobile()?host.clientWidth/host.clientHeight:innerWidth/innerHeight),.1,450);
 scene.add(new T.HemisphereLight('#ffedcf','#448eb0',1.15));const sun=new T.DirectionalLight('#fff0d8',2.1);sun.position.set(-25,50,30);scene.add(sun);renderer.shadowMap.enabled=!mobile();renderer.shadowMap.type=T.PCFSoftShadowMap;sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-35,right:35,top:35,bottom:-35,near:1,far:100});sun.shadow.bias=-.0005;sun.shadow.normalBias=.04;scene.add(sun.target);
-const inkBands=new T.DataTexture(new Uint8Array([60,145,220,255]),4,1,T.RedFormat);inkBands.minFilter=inkBands.magFilter=T.NearestFilter;inkBands.needsUpdate=true;
-const mats={};const mat=(color)=>mats[color]??(mats[color]=new T.MeshToonMaterial({color,gradientMap:inkBands}));
-function mesh(g,c,x=0,y=0,z=0,parent=scene){const o=new T.Mesh(g,typeof c==='string'?mat(c):c);o.position.set(x,y,z);parent.add(o);return o;}
-const box=(x,y,z,w,h,d,c,p)=>mesh(new T.BoxGeometry(w,h,d),c,x,y,z,p);
-const cyl=(x,y,z,r1,r2,h,c,p,n=12)=>mesh(new T.CylinderGeometry(r1,r2,h,n),c,x,y,z,p);
-const sphere=(x,y,z,r,c,p,sx=1,sy=1,sz=1)=>{const o=mesh(new T.SphereGeometry(r,16,10),c,x,y,z,p);o.scale.set(sx,sy,sz);return o;};
-function rod(a,b,r,color,parent){const d=new T.Vector3().subVectors(b,a);const o=cyl(0,0,0,r,r,d.length(),color,parent,6);o.position.copy(a).add(b).multiplyScalar(.5);o.quaternion.setFromUnitVectors(new T.Vector3(0,1,0),d.normalize());return o;}
-let seed=42;function rand(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296;}
+const kit=createKit(scene),{mesh,box,cyl,sphere,rod}=kit;
 // A displaced surface, with directional wave normals and foam glints, rendered live.
 const waterMat=new T.ShaderMaterial({uniforms:{time:{value:0},sea:{value:new T.Color('#278d92')}},vertexShader:`uniform float time;varying vec3 wp;varying float wave;void main(){vec3 p=position;float w=sin(p.x*.32+time*.8)*.19+cos(p.y*.23+time*.6)*.16; p.z+=w;wave=w;vec4 world=modelMatrix*vec4(p,1.);wp=world.xyz;gl_Position=projectionMatrix*viewMatrix*world;}`,fragmentShader:`uniform float time;uniform vec3 sea;varying vec3 wp;varying float wave;void main(){float lines=sin(wp.x*.8+wp.z*.44+time)*sin(wp.z*.63-time*.5);float sparkle=pow(max(0.,lines),28.);vec3 col=mix(sea,vec3(.48,.81,.75),wave*.65+.35);col+=sparkle*.15;float fog=smoothstep(90.,230.,length(cameraPosition-wp));col=mix(col,vec3(.66,.83,.81),fog);gl_FragColor=vec4(col,1.);}`});
 const water=mesh(new T.PlaneGeometry(3500,3500,mobile()?120:200,mobile()?120:200),waterMat,0,-.1,-500);water.rotation.x=-Math.PI/2;
@@ -55,36 +49,7 @@ const falls=[];for(let i=0;i<8;i++){const a=i/8*Math.PI*2;const x=Math.cos(a)*2.
 // Gate and elevated canal bridge facing the arriving ship.
 const gate=new T.Group();gate.position.set(0,1,13);city.add(gate);box(-2.3,2,0,1.5,4,2,'#e3d5b4',gate);box(2.3,2,0,1.5,4,2,'#e3d5b4',gate);box(0,4,0,6.2,1.1,2,'#dfcba5',gate);mesh(new T.TorusGeometry(2.2,.5,6,20,Math.PI),'#e9daba',0,1.5,1.1,gate);for(let i=0;i<9;i++)box(0,1,15+i,3.5,.3,.9,'#cbbb99',city);
 for(let i=0;i<14;i++){const a=i/14*Math.PI*2;box(Math.cos(a)*14.8,2,Math.sin(a)*14.8,1.5,1.6,1.2,'#e5d5b1',city)}
-// Thousand Sunny: procedural, modelled details; no image backdrops.
-const ship=new T.Group();ship.name='Thousand Sunny';scene.add(ship);
-const cream='#fff1cf',red='#a82e27',gold='#e9ad32',dark='#283336',wood='#824b2a';
-const round=(x,y,z,r,c,p,sx=1,sy=1,sz=1)=>{const o=mesh(new T.SphereGeometry(r,24,16),c,x,y,z,p);o.scale.set(sx,sy,sz);return o};
-function ovalBand(y,rx,rz,color,tube=.06){const points=[];for(let i=0;i<=64;i++){const a=i/64*Math.PI*2;points.push(new T.Vector3(Math.sin(a)*rx,y,Math.cos(a)*rz))}mesh(new T.TubeGeometry(new T.CatmullRomCurve3(points),64,tube,5,false),color,0,0,0,ship)}
-round(0,.7,0,1,wood,ship,1.85,1.2,3.65);round(0,1.05,0,1,red,ship,1.88,.8,3.6);
-const deck=cyl(0,1.55,0,1,1,.18,'#cda567',ship,48);deck.scale.set(1.7,1,3.35);
-for(let j=-7;j<=7;j++){const z=j*.42;const w=3.2*Math.sqrt(Math.max(0,1-z*z/11.8));box(0,1.65,z,w,.02,.022,'#9b733f',ship)}
-for(const y of [.45,.85,1.25])ovalBand(y,1.8,3.48,'#572f22',.025);ovalBand(1.68,1.76,3.37,cream,.13);ovalBand(1.84,1.72,3.34,gold,.06);
-for(const side of [-1,1]){for(let i=0;i<9;i++){const z=-2.8+i*.68;const x=side*1.77*Math.sqrt(1-z*z/13);box(x,1.15,z,.12,.83,.35,i%2===0?cream:red,ship)}for(let i=0;i<3;i++){const port=new T.Group();port.position.set(side*1.88,.95,-1.5+i*1.45);port.rotation.y=side*Math.PI/2;ship.add(port);mesh(new T.TorusGeometry(.4,.08,8,24),gold,0,0,0,port);mesh(new T.CircleGeometry(.34,24),'#263b3d',0,0,.015,port);mesh(new T.TorusGeometry(.29,.025,6,24),cream,0,0,.03,port);}}
-// Lawn deck and stern cabin with observation-room windows.
-box(0,1.72,.5,2.8,.08,2.4,'#629649',ship);
-const cabin=new T.Group();cabin.position.set(0,1.7,-2.1);ship.add(cabin);box(0,.65,0,2.4,1.3,1.65,cream,cabin);for(const side of [-1,1]){box(side*1.23,.68,0,.05,.64,1.05,'#43869a',cabin);for(let j=-1;j<=1;j++)box(side*1.27,.68,j*.32,.05,.8,.06,gold,cabin)}box(0,.65,.84,1.35,.65,.05,'#398694',cabin);for(let j=-2;j<=2;j++)box(j*.3,.65,.88,.05,.8,.05,gold,cabin);box(0,1.35,0,2.65,.18,1.85,red,cabin);
-round(0,1.75,-.2,1,red,cabin,1.25,.65,.85);for(let j=-3;j<=3;j++)box(j*.34,1.6,.59,.11,.35,.11,gold,cabin);
-const stern=cyl(0,1.05,-3.45,.62,.62,.45,'#273c40',ship,24);stern.rotation.x=Math.PI/2;mesh(new T.TorusGeometry(.65,.12,8,24),gold,0,1.05,-3.72,ship);
-// Main mast, crow's nest and a bowed cream sail with Straw Hat crest.
-function cloth(w,h,z,y,striped=false){const geo=new T.PlaneGeometry(w,h,24,18);const a=geo.attributes.position;for(let i=0;i<a.count;i++){const x=a.getX(i),py=a.getY(i);a.setZ(i,.55*Math.cos(x/w*Math.PI)*(1-.18*Math.cos(py/h*Math.PI)));}geo.computeVertexNormals();const canvas=document.createElement('canvas');canvas.width=512;canvas.height=512;const c=canvas.getContext('2d');c.fillStyle='#fff0cc';c.fillRect(0,0,512,512);if(striped){c.fillStyle='#b3332b';for(let i=0;i<7;i++)if(i%2===0)c.fillRect(i*74,0,74,512);}else{c.strokeStyle='#263335';c.lineWidth=21;c.lineCap='round';for(const [x1,y1,x2,y2]of [[155,332,359,202],[155,202,359,332]]){c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();for(const[x,y]of [[x1,y1],[x2,y2]]){c.beginPath();c.arc(x,y,15,0,Math.PI*2);c.fillStyle='#263335';c.fill();}}c.fillStyle='#263335';c.beginPath();c.ellipse(256,255,78,75,0,0,Math.PI*2);c.fill();c.fillRect(218,307,77,31);c.fillStyle='#fff0cc';for(const x of [227,284]){c.beginPath();c.ellipse(x,265,18,22,0,0,Math.PI*2);c.fill()}c.fillRect(235,313,5,21);c.fillRect(256,313,5,21);c.fillRect(277,313,5,21);c.fillStyle='#d9a435';c.beginPath();c.ellipse(256,202,63,42,0,Math.PI,Math.PI*2);c.fill();c.fillStyle='#b42b27';c.fillRect(194,193,124,13);c.fillStyle='#e6b84d';c.beginPath();c.ellipse(256,212,112,17,0,0,Math.PI*2);c.fill();}c.strokeStyle='#6c59412a';c.lineWidth=2;for(let i=0;i<9;i++){c.beginPath();c.moveTo(i*64,0);c.lineTo(i*64,512);c.stroke()}const tex=new T.CanvasTexture(canvas);tex.colorSpace=T.SRGBColorSpace;const sail=mesh(geo,new T.MeshStandardMaterial({map:tex,side:T.DoubleSide,roughness:1}),0,y,z,ship);return sail;}
-cyl(0,4.8,.6,.12,.19,7.2,wood,ship,12);box(0,7.3,.6,4.65,.13,.13,wood,ship);cloth(4.55,3.8,.68,5.35);cyl(0,7.85,.6,.48,.36,.55,cream,ship,20);cyl(0,8.15,.6,.52,.52,.12,gold,ship,20);
-cyl(0,4,-2,.1,.16,4.7,wood,ship,10);box(0,6.1,-2,3.5,.11,.11,wood,ship);cloth(3.4,2.5,-1.92,4.8,true);
-for(const z of [.6,-2]){for(const side of [-1,1]){rod(new T.Vector3(0,z===.6?7.3:6.1,z),new T.Vector3(side*1.7,1.8,z+1),.025,'#5a4c35',ship);rod(new T.Vector3(0,z===.6?7.3:6.1,z),new T.Vector3(side*1.3,1.8,z-1),.025,'#5a4c35',ship);}}
-mesh(new T.PlaneGeometry(.9,.48),new T.MeshStandardMaterial({color:'#202e31',side:T.DoubleSide}),.49,8.62,.6,ship);
-// Sunny's lion/sun figurehead: orange petal mane, muzzle, ears and crossbones.
-const lion=new T.Group();lion.position.set(0,2.05,3.55);lion.rotation.x=-.1;ship.add(lion);
-for(const angle of [-.65,.65]){const bone=box(0,0,-.13,2.65,.17,.18,cream,lion);bone.rotation.z=angle;for(const side of [-1,1]){round(Math.cos(angle)*side*1.28,Math.sin(angle)*side*1.28,-.13,.18,cream,lion)}}
-for(let i=0;i<12;i++){const a=i/12*Math.PI*2;const petal=round(Math.sin(a)*.78,Math.cos(a)*.78,0,.32,'#dc7b24',lion,.7,1.55,.55);petal.rotation.z=-a;}
-round(0,0,.08,.77,'#f4bd3a',lion,1,1,.42);round(-.53,.5,.15,.23,gold,lion);round(.53,.5,.15,.23,gold,lion);round(-.23,.15,.4,.11,dark,lion,1,1.3,.4);round(.23,.15,.4,.11,dark,lion,1,1.3,.4);round(-.17,-.18,.4,.27,'#ffdc71',lion,1,.8,.6);round(.17,-.18,.4,.27,'#ffdc71',lion,1,.8,.6);round(0,-.08,.57,.13,'#704229',lion,1,.8,.5);const smile=mesh(new T.TorusGeometry(.26,.036,6,24,Math.PI),'#704229',0,-.2,.58,lion);smile.rotation.z=Math.PI;
-// Tangerine trees on the upper deck and white railings.
-for(const x of [-.7,.7]){cyl(x,2.7,-2.45,.07,.1,.7,wood,ship,6);round(x,3.25,-2.45,.42,'#3c854a',ship);for(let i=0;i<4;i++)round(x+Math.sin(i*2)*.3,3.3+Math.cos(i)*.16,-2.15,.09,'#f59b26',ship);}
-for(const side of [-1,1])for(let i=0;i<12;i++){const z=-2.8+i*.52;const x=side*1.68*Math.sqrt(1-z*z/13);cyl(x,1.95,z,.035,.035,.5,cream,ship,6);}ovalBand(2.2,1.65,3.2,cream,.045);
-ship.scale.setScalar(1.12);
+const ship=buildSunny(kit);scene.add(ship);ship.scale.setScalar(1.12);
 
 // Clouds and distant land keep the same continuous horizon throughout the route.
 const clouds=[];for(let i=0;i<18;i++){const g=new T.Group();g.position.set(-65+rand()*205,24+rand()*16,-90+rand()*85);for(let j=0;j<4;j++)sphere(j*2.5,rand(),0,2.7,'#f2f0dc',g,1.5,.65,1);g.userData.origin=g.position.clone();clouds.push(g);scene.add(g)}for(let i=0;i<8;i++)sphere(-70+i*30,-1,-90-rand()*25,6+rand()*7,'#7daf9b',scene,1,.8,1);
@@ -133,7 +98,6 @@ for(const x of [2,5]){tree(x,-2,1.4,haven);tree(x,3,1,haven)}for(let j=0;j<12;j+
 batchStatic(reverse,new Set());batchStatic(sky,new Set());batchStatic(egg,new Set());batchStatic(haven,new Set());
 
 batchStatic(foosha,new Set([blades]));batchStatic(city,new Set(falls));
-function batchShip(){ship.updateMatrixWorld(true);const inv=new T.Matrix4().copy(ship.matrixWorld).invert();const groups=new Map();ship.traverse(o=>{if(!o.isMesh||o.material.map)return;const k=o.material.uuid;if(!groups.has(k))groups.set(k,[]);groups.get(k).push(o)});for(const items of groups.values()){if(items.length<2)continue;const gs=items.map(o=>(o.geometry.index?o.geometry.toNonIndexed():o.geometry.clone()).applyMatrix4(new T.Matrix4().multiplyMatrices(inv,o.matrixWorld)));const g=mergeGeometries(gs);if(g){const m=new T.Mesh(g,items[0].material);ship.add(m);items.forEach(o=>{o.removeFromParent();o.geometry.dispose()})}gs.forEach(x=>x.dispose())}}batchShip();
 const stops=[
 {id:'foosha',label:'FOOSHA VILLAGE',at:new T.Vector3(0,2,1),boat:new T.Vector3(6,.3,17),eye:new T.Vector3(24,16,38)},
 {id:'about',label:'REVERSE MOUNTAIN',at:new T.Vector3(145,5,-130),boat:new T.Vector3(145,.3,-105),eye:new T.Vector3(175,19,-89)},
@@ -145,9 +109,9 @@ const stops=[
 const route=new T.CatmullRomCurve3(stops.map(s=>s.boat));
 const trail=new T.Line(new T.BufferGeometry().setFromPoints(route.getPoints(180)),new T.LineDashedMaterial({color:'#dcebc9',dashSize:.7,gapSize:.7,transparent:true,opacity:.35}));trail.computeLineDistances();scene.add(trail);
 const projectCount=document.querySelectorAll('.discovery').length;
-const crew=createStrawHats(ship);let crewFocus=-1;
+const crew=createStrawHats(ship,kit);let crewFocus=-1;
 const crewSelect=document.getElementById('crew-select');crew.forEach((person,i)=>{const option=document.createElement('option');option.value=i;option.textContent=person.name;crewSelect.append(option)});
-scene.traverse(o=>{if(o.isMesh&&o!==water){o.castShadow=true;o.receiveShadow=true;}});
+scene.traverse(o=>{if(o.isMesh&&o!==water&&!o.userData.ink){o.castShadow=true;o.receiveShadow=true;}});
 // Match foliage and distant-cloud shadow behavior to the ground lighting.
 scene.traverse(o=>{if(o.isMesh&&o.material.color?.getHexString()==='f2f0dc')o.castShadow=false;});
 // The Knock-Up Stream lifts the Sunny to the cloud sea; a balloon octopus lowers her back down.
@@ -194,7 +158,7 @@ function paint(now){
  stream.visible=index===2&&airborne;if(stream.visible){stream.position.set(pos.x,0,pos.z);streamColumn.scale.y=alt+.6;streamColumn.position.y=(alt+.6)/2;streamFoam.rotation.z=now*.002;}
  balloon.visible=index===3&&airborne;
  if(moving&&!exploring){const orbit=camPos.clone().sub(lookAt);orbit.applyAxisAngle(new T.Vector3(0,1,0),Math.sin(local*Math.PI)*(index===1?.34:index===2?.4:.13));camPos.copy(lookAt).add(orbit);}
- const sunset=index===5?1:index===4?blend:0;scene.background.set('#b7dedb').lerp(new T.Color('#efc6a2'),sunset);scene.fog.color.copy(scene.background);
+ const sunset=index===5?1:index===4?blend:0;scene.background.set('#b7dedb').lerp(new T.Color('#efc6a2'),sunset);scene.fog.color.copy(scene.background);inkFog.color.value.copy(scene.background);
  if(mobile()){camPos.y+=6;camPos.z+=8;lookAt.lerp(tmp.copy(ship.position).add(new T.Vector3(0,5,0)),.2); }
  if(inspectShip){lookAt.copy(ship.position).add(new T.Vector3(0,3.3,0));camPos.copy(ship.position).add(new T.Vector3(mobile()?17:16,12,mobile()?25:22).applyAxisAngle(new T.Vector3(0,1,0),ship.rotation.y));}
  if(exploring){const offset=camPos.clone().sub(lookAt);const sph=new T.Spherical().setFromVector3(offset);sph.theta+=yaw;sph.phi=T.MathUtils.clamp(sph.phi+pitch,.2,1.45);camPos.copy(lookAt).add(offset.setFromSpherical(sph));}
@@ -222,7 +186,8 @@ document.querySelector('#look').addEventListener('click',()=>setExplore(!explori
 addEventListener('keydown',e=>{if(e.target.matches('select,input,textarea,button')){if(e.key==='Escape')setExplore(false);return}if(e.key==='Escape')setExplore(false);if(exploring&&['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){e.preventDefault();if(e.key==='ArrowLeft')yaw+=.1;if(e.key==='ArrowRight')yaw-=.1;if(e.key==='ArrowUp')pitch-=.06;if(e.key==='ArrowDown')pitch+=.06;requestFrame()}});
 window.addEventListener('voyage-navigate',()=>setExplore(false));function setMotion(v){moving=v;document.documentElement.classList.toggle('still',!v);document.querySelector('#motion').setAttribute('aria-pressed',String(v));document.querySelector('#motion').textContent=v?'Motion on':'Motion off';requestFrame()};document.querySelector('#motion').addEventListener('click',()=>setMotion(!moving));pref.addEventListener('change',()=>setMotion(!pref.matches));addEventListener('scroll',readScroll,{passive:true});addEventListener('resize',()=>{camera.aspect=(mobile()?host.clientWidth/host.clientHeight:innerWidth/innerHeight);camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(devicePixelRatio,mobile()?1.25:1.7));renderer.shadowMap.enabled=!mobile();renderer.setSize(mobile()?host.clientWidth:innerWidth,mobile()?host.clientHeight:innerHeight);readScroll()});document.addEventListener('visibilitychange',()=>{if(!document.hidden)requestFrame()});renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();moving=false;window.enableReadingView();});setMotion(moving);readScroll();document.querySelector('#loading').hidden=true;document.body.dataset.render='ready';
 window.addEventListener('voyage-resume',()=>{last=0;readScroll()});
-// Read-only diagnostics used for verifying that the prototype renders real geometry.
+// Diagnostics for checking the scene from the console; voyageOrbit turns the look-around camera.
+window.voyageOrbit=(y=0,p=0)=>{yaw=y;pitch=p;requestFrame()};
 window.voyageDiagnostics=()=>({progress,destination:document.body.dataset.destination,drawCalls:renderer.info.render.calls,triangles:renderer.info.render.triangles,geometries:renderer.info.memory.geometries,crew:crew.map(p=>p.name),crewFocus,exploring,inspectShip,yaw,pitch,moving,cameraHeight:camera.position.y});
 
 document.getElementById("crew-close")?.addEventListener("click",()=>setExplore(false));

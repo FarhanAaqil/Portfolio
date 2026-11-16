@@ -1,239 +1,370 @@
 {
+  "stats": {
+    "repos": 18,
+    "reposNote": "Across two GitHub accounts",
+    "profile": "https://github.com/FarhanAaqil"
+  },
   "projects": [
-    {
-      "id": "sheetsense-ai",
-      "title": "SheetSense AI",
-      "description": "Conversational AI agent over live spreadsheet data — users retrieve and update Google Sheets through plain English, removing the need for SQL queries or spreadsheet formulas entirely.",
-      "technologies": [
-        "Python",
-        "LangChain",
-        "Google Sheets API",
-        "FastAPI",
-        "RAG"
-      ],
-      "github": "https://github.com/FarhanAaqil/Sheet-AI",
-      "demo": null,
-      "screenshot": {
-        "src": "assets/projects/sheetsense-ai.png",
-        "alt": "SheetSense AI — visual analytics and spreadsheet assistant",
-        "caption": "SheetSense AI — visual analytics and spreadsheet assistant",
-        "width": 1920,
-        "height": 912
-      },
-      "secondaryScreenshots": [],
-      "highlights": [],
-      "prominence": "standard",
-      "status": "ready"
-    },
-    {
-      "id": "interviewpro",
-      "title": "InterviewPro",
-      "description": "AI-powered interview preparation platform using the Claude API — generates role-specific interview questions and delivers structured feedback on user responses in real time.",
-      "technologies": [
-        "React",
-        "Claude API",
-        "Node.js",
-        "Session Persistence"
-      ],
-      "github": "https://github.com/FarhanAaqil/interviewpro",
-      "demo": "https://claude.ai/public/artifacts/367d3360-5eab-4ff9-afe4-73b7c3050802",
-      "screenshot": {
-        "src": "assets/projects/interviewpro.png",
-        "alt": "InterviewPro — guided NumPy and Pandas practice",
-        "caption": "InterviewPro — guided NumPy and Pandas practice",
-        "width": 1916,
-        "height": 812
-      },
-      "secondaryScreenshots": [],
-      "highlights": [],
-      "prominence": "standard",
-      "status": "ready"
-    },
-    {
-      "id": "self-improving-ai-agent",
-      "title": "Self-Improving AI Agent",
-      "description": "An AI coding agent that generates Python, repairs failed executions, and uses vector memory to learn from past failures. Evolved a Streamlit prototype with a FastAPI backend for generation, execution, run history, and evaluation.",
-      "technologies": [
-        "Python",
-        "FastAPI",
-        "Groq",
-        "ChromaDB",
-        "SQLite",
-        "Streamlit"
-      ],
-      "github": "https://github.com/FarhanAaqil/self-improving-agent",
-      "demo": "https://self-improving-agent.streamlit.app/",
-      "screenshot": {
-        "src": "assets/projects/self-improving-ai-agent.png",
-        "alt": "Self-Improving AI Agent — task specification and code verification pipeline",
-        "caption": "Self-Improving AI Agent — new run and verification ledger",
-        "width": 1920,
-        "height": 912
-      },
-      "secondaryScreenshots": [],
-      "highlights": [],
-      "prominence": "standard",
-      "status": "ready"
-    },
     {
       "id": "gateorchestra",
       "title": "GateOrchestra",
-      "description": "Capstone project — a token-budget-calibrated gating layer for multi-agent orchestration, built as part of a 4-person team.",
+      "badge": "Capstone project",
+      "description": "A lightweight, trainable gate that sits in front of a multi-agent orchestrator. Using only pre-execution signals, it decides whether a cheap single-agent probe answer is good enough or whether the full multi-agent system is worth its tokens. Built with a four-person team.",
+      "highlights": [
+        "33% fewer tokens than always running the multi-agent system, at higher accuracy (97.9% vs 92.2% on Qwen2.5-3B)",
+        "Evaluated on 96 held-out tasks across two seeds, under equal token budgets"
+      ],
       "technologies": [
         "Python",
-        "Groq (Llama 3.3 70B)",
         "Multi-Agent Systems",
-        "Capstone"
+        "CoT-SC",
+        "Qwen2.5 / Groq",
+        "React"
       ],
       "github": "https://github.com/FarhanAaqil/GateOrchestra",
       "demo": null,
       "screenshot": {
-        "src": "assets/projects/gateorchestra.png",
-        "alt": "GateOrchestra — query routing and orchestration dashboard",
-        "caption": "GateOrchestra — query routing and orchestration dashboard",
-        "width": 1536,
-        "height": 1024
+        "src": "assets/projects/gateorchestra/overview.webp",
+        "alt": "GateOrchestra — overview and key results",
+        "caption": "GateOrchestra — overview and key results",
+        "width": 1440,
+        "height": 1000
       },
-      "secondaryScreenshots": [],
-      "highlights": [],
-      "prominence": "standard",
-      "status": "ready"
+      "secondaryScreenshots": [
+        {
+          "src": "assets/projects/gateorchestra/gate-inspector.webp",
+          "alt": "GateOrchestra — gate inspector",
+          "caption": "GateOrchestra — gate inspector",
+          "width": 1440,
+          "height": 1000
+        },
+        {
+          "src": "assets/projects/gateorchestra/results.webp",
+          "alt": "GateOrchestra — results",
+          "caption": "GateOrchestra — results",
+          "width": 1440,
+          "height": 1000
+        },
+        {
+          "src": "assets/projects/gateorchestra/benchmark.webp",
+          "alt": "GateOrchestra — benchmark",
+          "caption": "GateOrchestra — benchmark",
+          "width": 1440,
+          "height": 1000
+        }
+      ]
     },
     {
       "id": "orchestrator-agent",
-      "title": "Orchestrator Agent",
-      "description": "A multi-agent personal AI system with 10+ specialized agents coordinated by a Master Orchestrator. Uses Groq’s free tier, ChromaDB and SQLite, with human approval required before anything sends or publishes.",
+      "title": "Autonomous Orchestrator Agent",
+      "description": "An audited multi-agent orchestration service. Plain-language instructions are routed across a nine-agent roster, with a human approval gate in front of anything outbound, a crash-resilient autonomy engine, sandboxed web browsing and multi-tier memory.",
+      "highlights": [
+        "HMAC-signed human-in-the-loop approval gate that cannot be bypassed",
+        "239 passing tests and a 100% score on the router evaluation harness"
+      ],
       "technologies": [
         "Python",
-        "Groq",
-        "LangChain",
-        "ChromaDB",
+        "FastAPI",
         "SQLite",
-        "APScheduler"
+        "ChromaDB",
+        "React 18",
+        "SSE"
       ],
-      "github": "https://github.com/FarhanAaqil/orchestrator_agent",
+      "github": "https://github.com/FarhanAaqil/Autonomous-Orchestrator-Agent",
       "demo": null,
       "screenshot": {
-        "src": "assets/projects/orchestrator-agent.png",
-        "alt": "Orchestrator Agent — Aaqil AI system dashboard",
-        "caption": "Orchestrator Agent — Aaqil AI system dashboard",
-        "width": 1918,
-        "height": 1025
+        "src": "assets/projects/orchestrator-agent/dashboard-preview.webp",
+        "alt": "Autonomous Orchestrator Agent — executive control plane",
+        "caption": "Autonomous Orchestrator Agent — executive control plane",
+        "width": 1600,
+        "height": 760
       },
-      "secondaryScreenshots": [],
-      "highlights": [
-        "Cross-agent consultation, resume-based job scoring and semantic deduplication",
-        "Multi-turn memory with summarization",
-        "Human-in-the-loop approval gate for outbound actions"
-      ],
-      "prominence": "standard",
-      "status": "ready"
-    },
-    {
-      "id": "genai-lab",
-      "title": "GenAI Lab",
-      "description": "A browser-based platform for learning generative AI through 14 hands-on modules, a CodeMirror editor, and streaming AI mentor feedback. Learner progress is stored locally in the browser.",
-      "technologies": [
-        "React",
-        "JavaScript",
-        "CodeMirror",
-        "Gemini API",
-        "SSE",
-        "Vercel"
-      ],
-      "github": "https://github.com/FarhanAaqil/genai-lab",
-      "demo": "https://genai-lab-psi.vercel.app",
-      "screenshot": {
-        "src": "assets/projects/genai-lab.png",
-        "alt": "GenAI Lab — curriculum and hands-on learning",
-        "caption": "GenAI Lab — curriculum and hands-on learning",
-        "width": 1920,
-        "height": 912
-      },
-      "secondaryScreenshots": [],
-      "highlights": [
-        "Interactive coding exercises with AI mentor feedback",
-        "Serverless API with input validation and request metrics"
-      ],
-      "prominence": "standard",
-      "status": "ready",
-      "sources": [
-        "https://github.com/FarhanAaqil/genai-lab/blob/main/README.md",
-        "https://github.com/FarhanAaqil/genai-lab/blob/main/package.json",
-        "https://github.com/FarhanAaqil/genai-lab/blob/main/api/chat.js"
+      "secondaryScreenshots": [
+        {
+          "src": "assets/projects/orchestrator-agent/chat-demo.webp",
+          "alt": "Autonomous Orchestrator Agent — conversational dispatch",
+          "caption": "Autonomous Orchestrator Agent — conversational dispatch",
+          "width": 1600,
+          "height": 760
+        },
+        {
+          "src": "assets/projects/orchestrator-agent/approvals-demo.webp",
+          "alt": "Autonomous Orchestrator Agent — approval gate",
+          "caption": "Autonomous Orchestrator Agent — approval gate",
+          "width": 1600,
+          "height": 760
+        },
+        {
+          "src": "assets/projects/orchestrator-agent/pipelines-demo.webp",
+          "alt": "Autonomous Orchestrator Agent — pipelines",
+          "caption": "Autonomous Orchestrator Agent — pipelines",
+          "width": 1600,
+          "height": 760
+        }
       ]
     },
     {
-      "id": "cohere-aegis",
-      "title": "Cohere Aegis",
-      "description": "A workforce operations platform bringing attendance, timesheets, leave, shifts and team oversight into a role-aware dashboard, with a Chrome extension for clock-in monitoring.",
-      "technologies": [
-        "React",
-        "TypeScript",
-        "Supabase",
-        "PostgreSQL",
-        "Tailwind CSS",
-        "WebRTC",
-        "Chrome Manifest V3"
+      "id": "self-improving-agent",
+      "title": "Self-Improving Code Agent",
+      "description": "A sandboxed, self-repairing coding agent. It runs untrusted Python inside isolated Docker containers, reads its own tracebacks to repair bugs, remembers failure patterns in ChromaDB vector memory, and audits the result through multi-agent review.",
+      "highlights": [
+        "Spec tests are written first; every step streams live over server-sent events",
+        "Verified runs earn a certificate: tests, coverage, security findings and complexity"
       ],
-      "github": "https://github.com/farhansldm/LC-Monitor",
+      "technologies": [
+        "Python",
+        "FastAPI",
+        "React 19",
+        "Docker",
+        "Groq",
+        "ChromaDB"
+      ],
+      "github": "https://github.com/FarhanAaqil/self-improving-agent",
       "demo": null,
       "screenshot": {
-        "src": "assets/projects/cohere-aegis.png",
-        "alt": "Cohere Aegis — Lemon Host Monitor workforce dashboard",
-        "caption": "Cohere Aegis — Lemon Host Monitor workforce dashboard",
-        "width": 1919,
-        "height": 922
+        "src": "assets/projects/self-improving-agent/01-new-run.webp",
+        "alt": "Self-Improving Code Agent — workbench",
+        "caption": "Self-Improving Code Agent — workbench",
+        "width": 1440,
+        "height": 1000
       },
-      "secondaryScreenshots": [],
-      "highlights": [
-        "Employee, manager, HR and admin workflows",
-        "Realtime chat, calls and task management"
-      ],
-      "prominence": "standard",
-      "status": "ready",
-      "sources": [
-        "https://github.com/farhansldm/LC-Monitor/blob/main/README.md",
-        "https://github.com/farhansldm/LC-Monitor/blob/main/package.json"
+      "secondaryScreenshots": [
+        {
+          "src": "assets/projects/self-improving-agent/02-live-execution.webp",
+          "alt": "Self-Improving Code Agent — live run theatre",
+          "caption": "Self-Improving Code Agent — live run theatre",
+          "width": 1440,
+          "height": 1120
+        },
+        {
+          "src": "assets/projects/self-improving-agent/05-eval-dashboard.webp",
+          "alt": "Self-Improving Code Agent — evaluation dashboard",
+          "caption": "Self-Improving Code Agent — evaluation dashboard",
+          "width": 1440,
+          "height": 1000
+        }
       ]
     },
     {
-      "id": "rankforge",
-      "title": "RankForge",
-      "description": "An SEO agency platform for managing clients, websites, keywords, audits and reporting. Combines a React interface with an Express API and PostgreSQL data model, with Redis-backed audit job dispatch.",
-      "technologies": [
-        "React",
-        "JavaScript",
-        "Node.js",
-        "Express.js",
-        "PostgreSQL",
-        "Prisma",
-        "Redis",
-        "BullMQ"
+      "id": "nebulalm",
+      "title": "NebulaLM",
+      "description": "A decoder-only language model for space and astronomy, built from scratch, and a pre-registered study of what a 4.5M–29M parameter model learns, stores and leaks as it trains on repeated text.",
+      "highlights": [
+        "The 29.4M model reaches 1.060 bits per byte on the sealed test split — 23% below a 5-gram baseline",
+        "Verbatim extraction stays under 1%; rejected hypotheses are reported as rejected"
       ],
-      "github": "https://github.com/farhansldm/SLDM-seo",
+      "technologies": [
+        "Python",
+        "PyTorch",
+        "Transformer from scratch",
+        "BPE Tokenizer",
+        "Memorization Audits"
+      ],
+      "github": "https://github.com/FarhanAaqil/NebulaLM",
+      "demo": null,
+      "screenshot": null,
+      "secondaryScreenshots": []
+    },
+    {
+      "id": "visentra",
+      "title": "Visentra",
+      "badge": "Smart India Hackathon 2026 · Winner",
+      "description": "A forensic workstation for computer-vision supply chains. It ties cryptographic provenance — hashes, Merkle roots and Ed25519 signatures — to behavioural checks on one live lineage graph, so a poisoned sample, a flipped weight bit or a planted backdoor all surface in the same place.",
+      "highlights": [
+        "Four pillars: dataset integrity, model integrity, backdoor screening and inference binding",
+        "Every prediction downstream of a tampered artefact loses its certificate"
+      ],
+      "technologies": [
+        "Python",
+        "FastAPI",
+        "Computer Vision",
+        "Ed25519 / Merkle",
+        "React 19",
+        "Three.js"
+      ],
+      "github": "https://github.com/FarhanAaqil/Visentra",
       "demo": null,
       "screenshot": {
-        "src": "assets/projects/rankforge.png",
-        "alt": "RankForge — SEOPro command center",
-        "caption": "RankForge — SEOPro command center",
-        "width": 1672,
-        "height": 941
+        "src": "assets/projects/visentra/01-lineage.webp",
+        "alt": "Visentra — lineage view",
+        "caption": "Visentra — lineage view",
+        "width": 1440,
+        "height": 900
       },
-      "secondaryScreenshots": [],
-      "highlights": [
-        "Agency, client and website data relationships",
-        "Keyword, competitor and audit workflows"
-      ],
-      "prominence": "standard",
-      "status": "ready",
-      "sources": [
-        "https://github.com/farhansldm/SLDM-seo/blob/main/package.json",
-        "https://github.com/farhansldm/SLDM-seo/blob/main/prisma/schema.prisma",
-        "https://github.com/farhansldm/SLDM-seo/blob/main/server/index.js"
+      "secondaryScreenshots": [
+        {
+          "src": "assets/projects/visentra/02-interrogation-room.webp",
+          "alt": "Visentra — interrogation room",
+          "caption": "Visentra — interrogation room",
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "src": "assets/projects/visentra/06-assurance-report.webp",
+          "alt": "Visentra — assurance report",
+          "caption": "Visentra — assurance report",
+          "width": 1440,
+          "height": 900
+        },
+        {
+          "src": "assets/projects/visentra/07-visentrabench.webp",
+          "alt": "Visentra — VisentraBench",
+          "caption": "Visentra — VisentraBench",
+          "width": 1440,
+          "height": 800
+        }
       ]
     }
   ],
+  "archive": {
+    "internship": [
+      {
+        "title": "SheetSense AI",
+        "description": "Conversational AI agent over live spreadsheet data — users retrieve and update Google Sheets through plain English, removing the need for SQL queries or spreadsheet formulas entirely.",
+        "technologies": [
+          "Python",
+          "LangChain",
+          "Google Sheets API",
+          "FastAPI",
+          "RAG"
+        ],
+        "github": "https://github.com/FarhanAaqil/Sheet-AI",
+        "thumb": {
+          "src": "assets/projects/thumbs/sheetsense-ai.webp",
+          "alt": "SheetSense AI workspace",
+          "width": 640
+        }
+      },
+      {
+        "title": "Cohere Aegis · Lemon Host Monitor",
+        "description": "A workforce operations platform bringing attendance, timesheets, leave, shifts and team oversight into a role-aware dashboard, with a Chrome extension for clock-in monitoring.",
+        "technologies": [
+          "React",
+          "TypeScript",
+          "Supabase",
+          "PostgreSQL",
+          "Tailwind CSS",
+          "WebRTC",
+          "Chrome Manifest V3"
+        ],
+        "github": "https://github.com/farhansldm/LC-Monitor",
+        "thumb": {
+          "src": "assets/projects/thumbs/cohere-aegis.webp",
+          "alt": "Workforce monitoring dashboard",
+          "width": 640
+        }
+      },
+      {
+        "title": "RankForge",
+        "description": "An SEO agency platform for managing clients, websites, keywords, audits and reporting. Combines a React interface with an Express API and PostgreSQL data model, with Redis-backed audit job dispatch.",
+        "technologies": [
+          "React",
+          "JavaScript",
+          "Node.js",
+          "Express.js",
+          "PostgreSQL",
+          "Prisma",
+          "Redis",
+          "BullMQ"
+        ],
+        "github": "https://github.com/farhansldm/SLDM-seo",
+        "thumb": {
+          "src": "assets/projects/thumbs/rankforge.webp",
+          "alt": "SEO command centre",
+          "width": 640
+        }
+      },
+      {
+        "title": "Adore Tea · QR Table Ordering",
+        "description": "A QR ordering system for the Adore Tea restaurant. Customers scan the code at their table and order straight from their phone, and the flow from table to kitchen is fully automated.",
+        "technologies": [
+          "QR Ordering",
+          "Restaurant Automation"
+        ],
+        "github": null
+      }
+    ],
+    "more": [
+      {
+        "title": "CrisisRoute",
+        "description": "Decision support for post-disaster relief logistics. It estimates how likely each road is to be passable, plans which depots and vehicles serve which communities, and requires a second person to sign off every plan.",
+        "technologies": [
+          "Python",
+          "Logistics Planning",
+          "Human Sign-off"
+        ],
+        "github": "https://github.com/FarhanAaqil/Crisis-Route"
+      },
+      {
+        "title": "PatchGraph",
+        "description": "Explainable, constrained supply-chain remediation — “patch what matters.” It explains and recommends but never patches automatically; every decision needs human approval and is sealed into an append-only audit log.",
+        "technologies": [
+          "Python",
+          "Supply-Chain Security",
+          "Audit Log"
+        ],
+        "github": "https://github.com/FarhanAaqil/PatchGraph"
+      },
+      {
+        "title": "AquaSphere",
+        "description": "A satellite-embedding deep learning system that reconstructs subsurface ocean temperature profiles (0–1000 m) from surface satellite data, validated against real ARGO float observations for the North Indian Ocean.",
+        "technologies": [
+          "Python",
+          "Deep Learning",
+          "Satellite Data"
+        ],
+        "github": "https://github.com/FarhanAaqil/AquaSphere"
+      },
+      {
+        "title": "GenAI Lab",
+        "description": "A browser-based platform for learning generative AI through 14 hands-on modules, a CodeMirror editor, and streaming AI mentor feedback. Learner progress is stored locally in the browser.",
+        "technologies": [
+          "React",
+          "JavaScript",
+          "CodeMirror",
+          "Gemini API",
+          "SSE",
+          "Vercel"
+        ],
+        "github": "https://github.com/FarhanAaqil/genai-lab",
+        "demo": "https://genai-lab-psi.vercel.app",
+        "thumb": {
+          "src": "assets/projects/thumbs/genai-lab.webp",
+          "alt": "GenAI Lab curriculum",
+          "width": 640
+        }
+      },
+      {
+        "title": "InterviewPro",
+        "description": "AI-powered interview preparation platform using the Claude API — generates role-specific interview questions and delivers structured feedback on user responses in real time.",
+        "technologies": [
+          "React",
+          "Claude API",
+          "Node.js",
+          "Session Persistence"
+        ],
+        "github": "https://github.com/FarhanAaqil/interviewpro",
+        "demo": "https://claude.ai/public/artifacts/367d3360-5eab-4ff9-afe4-73b7c3050802",
+        "thumb": {
+          "src": "assets/projects/thumbs/interviewpro.webp",
+          "alt": "InterviewPro practice",
+          "width": 640
+        }
+      },
+      {
+        "title": "Samisthi Aranya Resorts",
+        "description": "The website for a forest-edge resort near the Nallamala hills in Telangana: one long, statically generated page covering rooms, experiences, safari, gallery and contact.",
+        "technologies": [
+          "Next.js",
+          "React",
+          "TypeScript",
+          "Tailwind CSS"
+        ],
+        "github": "https://github.com/FarhanAaqil/Samisthi-Aranya-Resort",
+        "demo": "https://samisthiaranyaresort.vercel.app"
+      }
+    ]
+  },
   "certifications": [
     {
       "issuer": "Anthropic",

@@ -13,3 +13,15 @@ function sync(){pending=0;const center=innerHeight*.53;for(const el of moments){
 function schedule(){if(!pending)pending=requestAnimationFrame(sync)}addEventListener('scroll',schedule,{passive:true});addEventListener('resize',schedule);sync();
 })();
 
+
+// The complete logbook: every project, opened from the Skypiea ledger.
+(()=>{
+const archive=document.getElementById('archive-dialog');let opener=null,jumped=false;
+const reveal=id=>{const target=document.getElementById(id);(target?.querySelector('h3')||target)?.scrollIntoView({block:'center'})};
+document.getElementById('archive-open')?.addEventListener('click',e=>{opener=e.currentTarget;jumped=false;document.body.classList.add('artifact-opened');archive.showModal();archive.scrollTop=0});
+document.getElementById('archive-close').addEventListener('click',()=>archive.close());
+archive.addEventListener('click',e=>{if(e.target===archive)archive.close()});
+archive.addEventListener('close',()=>{document.body.classList.remove('artifact-opened');if(!jumped)opener?.focus({preventScroll:true});window.dispatchEvent(new Event('voyage-resume'))});
+archive.querySelectorAll('[data-archive-jump]').forEach(link=>link.addEventListener('click',e=>{e.preventDefault();jumped=true;archive.close();reveal(link.hash.slice(1))}));
+document.querySelectorAll('.sky-ledger a[href^="#project-"]').forEach(link=>link.addEventListener('click',e=>{e.preventDefault();reveal(link.hash.slice(1))}));
+})();

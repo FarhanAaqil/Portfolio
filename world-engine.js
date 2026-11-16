@@ -111,7 +111,13 @@ cyl(0,-.5,0,12,10,2,'#c29a6b',reverse,24);
 for(let i=0;i<5;i++){const x=-8+i*4;const peak=mesh(new T.ConeGeometry(5+rand()*2,14+rand()*9,7),'#9b7053',x,6,-3+rand()*3,reverse);peak.rotation.y=rand();}
 const river=box(0,6.5,3,2,15,.18,'#69cbd0',reverse);river.rotation.x=-.3;
 for(const x of [-1.3,1.3]){const edge=box(x,6.5,3,.22,15,.22,'#eeddb7',reverse);edge.rotation.x=-.3;}
-const sky=new T.Group();sky.position.set(160,0,-610);scene.add(sky);
+// Skypiea floats on the White-White Sea, a cloud ocean far above the blue one.
+const SKY=46,skyCentre=new T.Vector3(160,0,-610),up=new T.Vector3(0,1,0);
+const sky=new T.Group();sky.position.set(160,SKY,-610);scene.add(sky);
+const whiteSea=mesh(new T.CircleGeometry(74,72),'#f6f3e7',0,-.35,0,sky);whiteSea.rotation.x=-Math.PI/2;
+for(let i=0;i<46;i++){const a=i/46*Math.PI*2,r=68+rand()*9;sphere(Math.cos(a)*r,-1.4-rand()*1.5,Math.sin(a)*r,7+rand()*4,'#f6f3e7',sky,1.5,.42,1.2)}
+for(let i=0;i<26;i++){const a=rand()*Math.PI*2,r=27+rand()*38;sphere(Math.cos(a)*r,-.9,Math.sin(a)*r,2.2+rand()*2.4,'#fbf9f0',sky,1.6,.3,1.1)}
+sphere(0,3,0,10.5,'#f8f2e3',sky,1.15,.62,.95);
 for(let i=0;i<18;i++){const a=i/18*Math.PI*2;sphere(Math.cos(a)*9,7+rand(),Math.sin(a)*7,3.2,'#f8f2e3',sky,1.3,.6,1)}
 cyl(0,8,0,8,9,1,'#e8dfbe',sky,32);cyl(0,8.65,0,7.7,8,.35,'#b4c99b',sky,32);
 for(const x of [-4,0,4]){for(const z of [-2,2]){cyl(x,11,z,.35,.45,5,'#f1e9d1',sky,12);cyl(x,13.6,z,.6,.6,.3,'#ddcfaa',sky,12);}}
@@ -138,14 +144,19 @@ const stops=[
 ];stops.slice(1).forEach(s=>{s.boat.x=s.at.x+8;s.boat.z=s.at.z+19;});const chapters=stops.map(s=>document.getElementById(s.id));
 const route=new T.CatmullRomCurve3(stops.map(s=>s.boat));
 const trail=new T.Line(new T.BufferGeometry().setFromPoints(route.getPoints(180)),new T.LineDashedMaterial({color:'#dcebc9',dashSize:.7,gapSize:.7,transparent:true,opacity:.35}));trail.computeLineDistances();scene.add(trail);
-// Cloud terraces extend Skypiea upward while retaining its original island.
-const skyTerraces=new T.Group();scene.add(skyTerraces);
-const projectCount=document.querySelectorAll('.discovery').length;for(let i=1;i<projectCount;i++){const g=new T.Group();g.position.set(160+Math.sin(i*1.1)*8,8+i*6,-610-i*3);for(let j=0;j<4;j++)sphere((j-1.5)*2.5,0,Math.sin(j)*1.5,2.6,'#f3eee0',g,1.35,.35,1);skyTerraces.add(g)}
+const projectCount=document.querySelectorAll('.discovery').length;
 const crew=createStrawHats(ship);let crewFocus=-1;
 const crewSelect=document.getElementById('crew-select');crew.forEach((person,i)=>{const option=document.createElement('option');option.value=i;option.textContent=person.name;crewSelect.append(option)});
 scene.traverse(o=>{if(o.isMesh&&o!==water){o.castShadow=true;o.receiveShadow=true;}});
 // Match foliage and distant-cloud shadow behavior to the ground lighting.
 scene.traverse(o=>{if(o.isMesh&&o.material.color?.getHexString()==='f2f0dc')o.castShadow=false;});
+// The Knock-Up Stream lifts the Sunny to the cloud sea; a balloon octopus lowers her back down.
+const stream=new T.Group();scene.add(stream);
+const streamColumn=new T.Mesh(new T.CylinderGeometry(2.4,3.8,1,24,1,true),new T.MeshBasicMaterial({color:'#8fd6d8',transparent:true,opacity:.78,side:T.DoubleSide}));stream.add(streamColumn);
+const streamFoam=new T.Mesh(new T.TorusGeometry(4.4,.8,8,32),new T.MeshBasicMaterial({color:'#eefaf2'}));streamFoam.rotation.x=Math.PI/2;streamFoam.position.y=.2;stream.add(streamFoam);
+const balloon=new T.Group();ship.add(balloon);sphere(0,13,0,3.3,'#e8813f',balloon,1.3,.82,1.3);sphere(0,10.6,0,1.5,'#d9713a',balloon,1.2,.7,1.2);
+for(let i=0;i<8;i++){const a=i/8*Math.PI*2;rod(new T.Vector3(Math.cos(a)*3.4,11.4,Math.sin(a)*3.4),new T.Vector3(Math.cos(a)*1.5,2.3,Math.sin(a)*2.9),.07,'#d9713a',balloon)}
+stream.visible=balloon.visible=false;let shipYaw=null;
 let progress=0,targetProgress=0,exploring=false,inspectShip=false,yaw=0,pitch=0,drag=null,frame=0,last=0,moving=!matchMedia('(prefers-reduced-motion: reduce)').matches;const pref=matchMedia('(prefers-reduced-motion: reduce)');
 const tmp=new T.Vector3(),lookAt=new T.Vector3(),camPos=new T.Vector3();
 function readScroll(){if(exploring)setExplore(false);targetProgress=T.MathUtils.clamp(scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight),0,1);requestFrame()}
@@ -164,15 +175,24 @@ function paint(now){
  const local=T.MathUtils.clamp((sy-chapters[index].offsetTop)/length,0,1);
  const departure=Math.max(innerHeight*.7,length-innerHeight*.8);
  const blend=index===stops.length-1?0:T.MathUtils.smoothstep(sy-chapters[index].offsetTop,departure,length);
- const routeT=(index+blend)/(stops.length-1),pos=route.getPoint(routeT);ship.position.copy(pos);
- tangent.copy(route.getTangent(Math.min(.9999,routeT)));ship.rotation.y=Math.atan2(tangent.x,tangent.z);
+ const routeT=(index+blend)/(stops.length-1),pos=route.getPoint(routeT);
+ tangent.copy(route.getTangent(Math.min(.9999,routeT)));
+ // At Skypiea the Sunny stays on the cloud sea and circles the island once while the projects scroll past.
+ const lap=index===3?T.MathUtils.clamp((sy-chapters[index].offsetTop-innerHeight*.35)/Math.max(1,departure-innerHeight*.35),0,1):0,turn=lap*Math.PI*2,circling=lap>0&&lap<1;
+ if(circling){pos.sub(skyCentre).applyAxisAngle(up,turn);tangent.set(pos.z,0,-pos.x).normalize();pos.add(skyCentre);}
+ const alt=SKY*(index===2?T.MathUtils.smoothstep(blend,.5,.9):index===3?1-T.MathUtils.smoothstep(blend,.12,.6):0),airborne=alt>.05&&alt<SKY-.05;
+ ship.position.copy(pos);ship.position.y+=alt;
+ const heading=Math.atan2(tangent.x,tangent.z);
+ if(shipYaw===null||!moving)shipYaw=heading;else shipYaw+=Math.atan2(Math.sin(heading-shipYaw),Math.cos(heading-shipYaw))*(1-Math.exp(-7*dt));
+ ship.rotation.y=shipYaw;
  ship.position.y+=moving?Math.sin(now*.0018)*.10:0;ship.rotation.z=moving?Math.sin(now*.0015)*.025+Math.sin(blend*Math.PI)*.045:0;
  eyeOffset.copy(current.eye).sub(current.boat).lerp(tmp.copy(next.eye).sub(next.boat),blend);
  aimOffset.copy(current.at).sub(current.boat).lerp(tmp.copy(next.at).sub(next.boat),blend);
- lookAt.copy(pos).add(aimOffset);camPos.copy(pos).add(eyeOffset);
- const climb=index===3?T.MathUtils.clamp((sy-chapters[index].offsetTop-innerHeight*.35)/Math.max(1,departure-innerHeight*.35),0,1)*Math.max(0,projectCount-1)*6*(1-blend):0;
- if(!exploring){camPos.y+=climb;lookAt.y+=climb;ship.position.y+=climb;}
- skyTerraces.visible=index===3;trail.visible=index!==3;
+ if(circling){eyeOffset.applyAxisAngle(up,turn);aimOffset.applyAxisAngle(up,turn);}
+ lookAt.copy(pos).add(aimOffset);camPos.copy(pos).add(eyeOffset);camPos.y+=alt;lookAt.y+=alt;
+ trail.visible=alt<1;
+ stream.visible=index===2&&airborne;if(stream.visible){stream.position.set(pos.x,0,pos.z);streamColumn.scale.y=alt+.6;streamColumn.position.y=(alt+.6)/2;streamFoam.rotation.z=now*.002;}
+ balloon.visible=index===3&&airborne;
  if(moving&&!exploring){const orbit=camPos.clone().sub(lookAt);orbit.applyAxisAngle(new T.Vector3(0,1,0),Math.sin(local*Math.PI)*(index===1?.34:index===2?.4:.13));camPos.copy(lookAt).add(orbit);}
  const sunset=index===5?1:index===4?blend:0;scene.background.set('#b7dedb').lerp(new T.Color('#efc6a2'),sunset);scene.fog.color.copy(scene.background);
  if(mobile()){camPos.y+=6;camPos.z+=8;lookAt.lerp(tmp.copy(ship.position).add(new T.Vector3(0,5,0)),.2); }
@@ -184,10 +204,10 @@ function paint(now){
  if(exploring||mobile())camera.clearViewOffset();else camera.setViewOffset(vw,vh,-vw*.23*(window.voyageComposition??1),0,vw,vh);
  camera.position.copy(camPos);camera.lookAt(lookAt);camera.updateMatrixWorld();sun.target.position.copy(lookAt);sun.position.copy(lookAt).add(new T.Vector3(-25,42,25));
  if(moving){waterMat.uniforms.time.value=now*.00085;blades.rotation.z=now*.0003;falls.forEach((f,i)=>{f.scale.x=.9+Math.sin(now*.003+i)*.1;});}
- clouds.forEach((c,i)=>{c.position.copy(c.userData.origin);c.position.x+=lookAt.x+(moving?Math.sin(now*.00009+i)*7:0);c.position.z+=lookAt.z-25;});
- wake.position.copy(ship.position);wake.position.y=.10;wake.rotation.y=ship.rotation.y;wake.visible=!exploring;wake.scale.setScalar(1+scrollEnergy*.35);
- projected.copy(current.at).add(new T.Vector3(0,index===3?9+climb:13,0)).project(camera);
- landmark.style.left=T.MathUtils.clamp((projected.x*.5+.5)*innerWidth,innerWidth*.15,innerWidth*.86)+'px';landmark.style.top=T.MathUtils.clamp((-projected.y*.5+.5)*innerHeight,110,innerHeight*.46)+'px';landmark.style.opacity=String(1-Math.sin(blend*Math.PI));
+ clouds.forEach((c,i)=>{c.position.copy(c.userData.origin);c.position.x+=lookAt.x+(moving?Math.sin(now*.00009+i)*7:0);c.position.y+=alt;c.position.z+=lookAt.z-25;});
+ wake.position.copy(ship.position);wake.position.y=alt+.10;wake.rotation.y=ship.rotation.y;wake.visible=!exploring&&!airborne;wake.scale.setScalar(1+scrollEnergy*.35);
+ projected.copy(current.at).add(new T.Vector3(0,index===3?9+SKY:13,0)).project(camera);
+ landmark.style.left=T.MathUtils.clamp((projected.x*.5+.5)*innerWidth,innerWidth*.15,innerWidth*.86)+'px';landmark.style.top=T.MathUtils.clamp((-projected.y*.5+.5)*innerHeight,110,innerHeight*.46)+'px';landmark.style.opacity=String(index===2&&alt>0?0:1-Math.sin(blend*Math.PI));
  if(previousDestination!==current.id){landmarkName.textContent=current.label;landmarkNote.textContent=notes[index];previousDestination=current.id;document.body.dataset.destination=current.id;document.querySelector('#destination').value=current.id;document.querySelectorAll('[data-sail]').forEach(b=>{b.classList.toggle('active',b.dataset.sail===current.id);if(b.dataset.sail===current.id)b.setAttribute('aria-current','location');else b.removeAttribute('aria-current')});}
  if(index===3){let active=0;discoveries.forEach((entry,i)=>{if(entry.getBoundingClientRect().top<innerHeight*.7)active=i;});landmarkNote.textContent='DISCOVERY '+String(active+1).padStart(2,'0')+' / '+String(projectCount).padStart(2,'0')+' · '+discoveries[active].querySelector('h3').textContent;}
  document.body.style.setProperty('--speed',String(scrollEnergy*Math.sin(blend*Math.PI)*.65));document.querySelector('#route-ship').style.left=t*100+'%';document.querySelector('#position').textContent=blend>.03?'SAILING TO '+next.label:current.label;

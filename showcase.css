@@ -15,3 +15,38 @@
 
 /* Keep the full supplied UI visible, with the cue outside the image. */
 .artifact-open:has(img){padding-bottom:26px}.artifact-open:has(img) .artifact-cue{bottom:0;right:0;color:#17464c}.artifact-open:has(img)::after{bottom:26px}
+
+/* Skypiea opens with a ledger: repositories, every project, and the five showcased below. */
+.sky-ledger{width:min(580px,46%);min-height:96svh;display:flex;flex-direction:column;justify-content:center;padding:10svh 0}
+.ledger-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-bottom:36px}
+.ledger-tile{position:relative;display:flex;flex-direction:column;gap:6px;padding:20px 16px 16px;text-align:left;text-decoration:none;font:inherit;color:#173d40;background:#f6f1dfe6;border:1px solid #c9b88f;border-radius:0;box-shadow:0 10px 24px #153b4018;cursor:pointer}
+.ledger-tile b{font:clamp(44px,5vw,72px)/1 Georgia,serif;letter-spacing:-.05em;color:#a45536}
+.ledger-tile span{font:11px/1.5 monospace;text-transform:uppercase;letter-spacing:.08em}
+.ledger-tile small{font:10px/1.5 monospace;color:#7c583e}
+.ledger-tile:hover{transform:translateY(-3px);border-color:#a45536;color:#173d40}
+button.ledger-tile{background:#fbf3d9;border-color:#a45536}
+button.ledger-tile::after{content:'OPEN';position:absolute;top:-9px;right:10px;padding:3px 7px;background:#a45536;color:#fff6e0;font:8px monospace;letter-spacing:.14em}
+.ledger-best{list-style:none;counter-reset:best;margin:0;padding:0;border-top:1px solid #173d4026}
+.ledger-best li{counter-increment:best;display:flex;align-items:baseline;gap:14px;padding:11px 0;border-bottom:1px solid #173d4026;font:italic 21px/1.3 Georgia,serif}
+.ledger-best li::before{content:counter(best,decimal-leading-zero);font:10px monospace;color:#995134}
+.ledger-best a{color:inherit;text-decoration:none}
+.ledger-best small{margin-left:auto;font:9px/1.5 monospace;letter-spacing:.08em;text-transform:uppercase;text-align:right;color:#a45536}
+.project-badge{display:inline-block;align-self:flex-start;margin:0 0 16px;padding:4px 9px;background:#a45536;color:#fff6e0;font:9px/1.5 monospace;letter-spacing:.12em;text-transform:uppercase}
+.discovery-copy .eyebrow{display:block}
+
+/* The complete logbook: every project in one full-screen dialog. */
+#archive-dialog{inset:0;width:100vw;max-width:none;height:100dvh;max-height:none;margin:0;padding:7vh 6vw 10vh;border:0;border-radius:0;background:radial-gradient(ellipse at 20% 0%,#d6e6dc,#eef0e0 70%);box-shadow:none;overflow:auto;overscroll-behavior:contain}
+#archive-dialog::backdrop{background:#163e40cc}
+#archive-close{display:block;margin-bottom:6vh;padding:8px 0;background:none;border:0;border-bottom:1px solid #9b6942;font:12px monospace}
+#archive-dialog h2{font:clamp(38px,4.4vw,64px)/1.06 Georgia,serif;margin:0}
+.archive-group{margin-top:7vh}
+.archive-group h3{margin:0 0 10px;color:#995134;font-weight:400}
+.archive-note{max-width:72ch;margin:0;font:13px/1.8 monospace;color:#714f3a}
+.archive-grid{list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:22px;margin:22px 0 0;padding:0}
+.archive-card{display:flex;flex-direction:column;gap:10px;padding:18px;background:#f8f4e4;border:1px solid #cdbf9b}
+.archive-card img{display:block;width:100%;height:auto;aspect-ratio:2/1;object-fit:cover;object-position:top left;margin-bottom:6px;border:1px solid #d8ccac}
+.archive-card .project-badge{margin:0}
+.archive-card h4{margin:0;font:26px/1.15 Georgia,serif}
+.archive-card p{margin:0;font-size:14px;line-height:1.7}
+.archive-card .tags{display:flex;flex-wrap:wrap;gap:4px 12px;margin:auto 0 0;padding-top:8px}
+.archive-card .project-links{flex-wrap:wrap;gap:8px 20px}

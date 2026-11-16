@@ -53,7 +53,7 @@ for(let tier=0;tier<3;tier++){const radius=12-tier*3.2,base=1.4+tier*3.3;cyl(0,b
 cyl(0,12,0,2.5,3,4.5,'#eadac0',city,24);cyl(0,14.4,0,3.1,3.1,.5,'#f3e7c8',city,24);cyl(0,15.1,0,2.7,2.7,.7,'#71bbba',city,24);cyl(0,16.5,0,.3,.5,3,'#d9ceb0',city,12);sphere(0,18.1,0,.65,'#e6d6a2',city);
 const falls=[];for(let i=0;i<8;i++){const a=i/8*Math.PI*2;const x=Math.cos(a)*2.4,z=Math.sin(a)*2.4;const f=cyl(x,11,z,.16,.4,7,'#7bc8c7',city,6);falls.push(f);}
 // Gate and elevated canal bridge facing the arriving ship.
-const gate=new T.Group();gate.position.set(0,1,13);city.add(gate);box(-2.3,2,0,1.5,4,2,'#e3d5b4',gate);box(2.3,2,0,1.5,4,2,'#e3d5b4',gate);box(0,4,0,6.2,1.1,2,'#dfcba5',gate);const bridge=mesh(new T.TorusGeometry(2.2,.5,6,20,Math.PI),'#e9daba',0,1.5,1.1,gate);for(let i=0;i<9;i++)box(0,1,15+i,3.5,.3,.9,'#cbbb99',city);
+const gate=new T.Group();gate.position.set(0,1,13);city.add(gate);box(-2.3,2,0,1.5,4,2,'#e3d5b4',gate);box(2.3,2,0,1.5,4,2,'#e3d5b4',gate);box(0,4,0,6.2,1.1,2,'#dfcba5',gate);mesh(new T.TorusGeometry(2.2,.5,6,20,Math.PI),'#e9daba',0,1.5,1.1,gate);for(let i=0;i<9;i++)box(0,1,15+i,3.5,.3,.9,'#cbbb99',city);
 for(let i=0;i<14;i++){const a=i/14*Math.PI*2;box(Math.cos(a)*14.8,2,Math.sin(a)*14.8,1.5,1.6,1.2,'#e5d5b1',city)}
 // Thousand Sunny: procedural, modelled details; no image backdrops.
 const ship=new T.Group();ship.name='Thousand Sunny';scene.add(ship);
@@ -68,14 +68,14 @@ for(const side of [-1,1]){for(let i=0;i<9;i++){const z=-2.8+i*.68;const x=side*1
 // Lawn deck and stern cabin with observation-room windows.
 box(0,1.72,.5,2.8,.08,2.4,'#629649',ship);
 const cabin=new T.Group();cabin.position.set(0,1.7,-2.1);ship.add(cabin);box(0,.65,0,2.4,1.3,1.65,cream,cabin);for(const side of [-1,1]){box(side*1.23,.68,0,.05,.64,1.05,'#43869a',cabin);for(let j=-1;j<=1;j++)box(side*1.27,.68,j*.32,.05,.8,.06,gold,cabin)}box(0,.65,.84,1.35,.65,.05,'#398694',cabin);for(let j=-2;j<=2;j++)box(j*.3,.65,.88,.05,.8,.05,gold,cabin);box(0,1.35,0,2.65,.18,1.85,red,cabin);
-const dome=round(0,1.75,-.2,1,red,cabin,1.25,.65,.85);for(let j=-3;j<=3;j++)box(j*.34,1.6,.59,.11,.35,.11,gold,cabin);
-const stern=cyl(0,1.05,-3.45,.62,.62,.45,'#273c40',ship,24);stern.rotation.x=Math.PI/2;const sternRing=mesh(new T.TorusGeometry(.65,.12,8,24),gold,0,1.05,-3.72,ship);
+round(0,1.75,-.2,1,red,cabin,1.25,.65,.85);for(let j=-3;j<=3;j++)box(j*.34,1.6,.59,.11,.35,.11,gold,cabin);
+const stern=cyl(0,1.05,-3.45,.62,.62,.45,'#273c40',ship,24);stern.rotation.x=Math.PI/2;mesh(new T.TorusGeometry(.65,.12,8,24),gold,0,1.05,-3.72,ship);
 // Main mast, crow's nest and a bowed cream sail with Straw Hat crest.
 function cloth(w,h,z,y,striped=false){const geo=new T.PlaneGeometry(w,h,24,18);const a=geo.attributes.position;for(let i=0;i<a.count;i++){const x=a.getX(i),py=a.getY(i);a.setZ(i,.55*Math.cos(x/w*Math.PI)*(1-.18*Math.cos(py/h*Math.PI)));}geo.computeVertexNormals();const canvas=document.createElement('canvas');canvas.width=512;canvas.height=512;const c=canvas.getContext('2d');c.fillStyle='#fff0cc';c.fillRect(0,0,512,512);if(striped){c.fillStyle='#b3332b';for(let i=0;i<7;i++)if(i%2===0)c.fillRect(i*74,0,74,512);}else{c.strokeStyle='#263335';c.lineWidth=21;c.lineCap='round';for(const [x1,y1,x2,y2]of [[155,332,359,202],[155,202,359,332]]){c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();for(const[x,y]of [[x1,y1],[x2,y2]]){c.beginPath();c.arc(x,y,15,0,Math.PI*2);c.fillStyle='#263335';c.fill();}}c.fillStyle='#263335';c.beginPath();c.ellipse(256,255,78,75,0,0,Math.PI*2);c.fill();c.fillRect(218,307,77,31);c.fillStyle='#fff0cc';for(const x of [227,284]){c.beginPath();c.ellipse(x,265,18,22,0,0,Math.PI*2);c.fill()}c.fillRect(235,313,5,21);c.fillRect(256,313,5,21);c.fillRect(277,313,5,21);c.fillStyle='#d9a435';c.beginPath();c.ellipse(256,202,63,42,0,Math.PI,Math.PI*2);c.fill();c.fillStyle='#b42b27';c.fillRect(194,193,124,13);c.fillStyle='#e6b84d';c.beginPath();c.ellipse(256,212,112,17,0,0,Math.PI*2);c.fill();}c.strokeStyle='#6c59412a';c.lineWidth=2;for(let i=0;i<9;i++){c.beginPath();c.moveTo(i*64,0);c.lineTo(i*64,512);c.stroke()}const tex=new T.CanvasTexture(canvas);tex.colorSpace=T.SRGBColorSpace;const sail=mesh(geo,new T.MeshStandardMaterial({map:tex,side:T.DoubleSide,roughness:1}),0,y,z,ship);return sail;}
 cyl(0,4.8,.6,.12,.19,7.2,wood,ship,12);box(0,7.3,.6,4.65,.13,.13,wood,ship);cloth(4.55,3.8,.68,5.35);cyl(0,7.85,.6,.48,.36,.55,cream,ship,20);cyl(0,8.15,.6,.52,.52,.12,gold,ship,20);
 cyl(0,4,-2,.1,.16,4.7,wood,ship,10);box(0,6.1,-2,3.5,.11,.11,wood,ship);cloth(3.4,2.5,-1.92,4.8,true);
 for(const z of [.6,-2]){for(const side of [-1,1]){rod(new T.Vector3(0,z===.6?7.3:6.1,z),new T.Vector3(side*1.7,1.8,z+1),.025,'#5a4c35',ship);rod(new T.Vector3(0,z===.6?7.3:6.1,z),new T.Vector3(side*1.3,1.8,z-1),.025,'#5a4c35',ship);}}
-const flag=mesh(new T.PlaneGeometry(.9,.48),new T.MeshStandardMaterial({color:'#202e31',side:T.DoubleSide}),.49,8.62,.6,ship);
+mesh(new T.PlaneGeometry(.9,.48),new T.MeshStandardMaterial({color:'#202e31',side:T.DoubleSide}),.49,8.62,.6,ship);
 // Sunny's lion/sun figurehead: orange petal mane, muzzle, ears and crossbones.
 const lion=new T.Group();lion.position.set(0,2.05,3.55);lion.rotation.x=-.1;ship.add(lion);
 for(const angle of [-.65,.65]){const bone=box(0,0,-.13,2.65,.17,.18,cream,lion);bone.rotation.z=angle;for(const side of [-1,1]){round(Math.cos(angle)*side*1.28,Math.sin(angle)*side*1.28,-.13,.18,cream,lion)}}
@@ -118,7 +118,7 @@ for(const x of [-4,0,4]){for(const z of [-2,2]){cyl(x,11,z,.35,.45,5,'#f1e9d1',s
 box(0,14,0,10,.65,6,'#f5e9c9',sky);const templeRoof=mesh(new T.ConeGeometry(6.4,2.5,4),'#d5bc72',0,15.5,0,sky);templeRoof.rotation.y=Math.PI/4;
 const bell=new T.Group();bell.position.set(0,11.5,1);sky.add(bell);cyl(0,0,0,.65,1.1,1.5,'#d0a333',bell,24);cyl(0,-.8,0,1.2,1.2,.2,'#e0b646',bell,24);sphere(0,-1,0,.15,'#ac782f',bell);for(let i=0;i<5;i++)box(0,8.8+i*.3,6-i*.7,3.5,.3,.7,'#e7d8b9',sky);
 const egg=new T.Group();egg.position.set(-230,0,-850);scene.add(egg);cyl(0,.2,0,13,11,2,'#a7bcbc',egg,40);cyl(0,1.4,0,12.8,13,.6,'#f1ede0',egg,40);
-const domeEgg=sphere(0,9,-2,6,'#eef0df',egg,1,1.35,1);const ring=mesh(new T.TorusGeometry(8,.22,8,64),'#d8714e',0,9,-2,egg);ring.rotation.x=Math.PI/2-.28;const ring2=mesh(new T.TorusGeometry(7.3,.14,6,64),'#b4d7d4',0,10,-2,egg);ring2.rotation.x=.4;ring2.rotation.y=.7;
+sphere(0,9,-2,6,'#eef0df',egg,1,1.35,1);const ring=mesh(new T.TorusGeometry(8,.22,8,64),'#d8714e',0,9,-2,egg);ring.rotation.x=Math.PI/2-.28;const ring2=mesh(new T.TorusGeometry(7.3,.14,6,64),'#b4d7d4',0,10,-2,egg);ring2.rotation.x=.4;ring2.rotation.y=.7;
 box(0,7,3.58,7,1.3,.22,'#4c969d',egg);for(let j=-3;j<=3;j++)box(j,7,3.76,.06,1.4,.06,'#e6dab6',egg);
 for(let i=0;i<7;i++){const a=i/7*Math.PI*2;const x=Math.sin(a)*9,z=Math.cos(a)*9;cyl(x,3.3,z,1.4,1.4,3.5,'#e1e7d8',egg,16);sphere(x,5.3,z,1.65,i%2?'#d77c58':'#78afb6',egg,1,.6,1);cyl(x,2.5,z,1.45,1.45,.3,'#579ba0',egg,16);}
 for(const x of [-7,7]){cyl(x,7,0,.25,.35,12,'#d9dfcc',egg,12);sphere(x,13.2,0,1,'#ebba67',egg);mesh(new T.TorusGeometry(1.4,.08,6,24),'#bd714e',x,13.2,0,egg).rotation.x=Math.PI/2;}

@@ -18,5 +18,7 @@ html=html.replace(/<b>\d+<\/b>Featured projects/, '<b>'+String(count).padStart(2
 html=html.replace(/Ascend through [^.]+ projects\. Each one a new discovery\./,word+' discoveries. Ascend through '+count+' projects.');
 html=html.replace(/(?:Six|Eight|Nine|\d+) discoveries\. Ascend through \d+ projects\./,word+' discoveries. Ascend through '+count+' projects.');
 html=html.replace(/<small>Projects(?: · \d+)? ↗<\/small>/,'<small>Projects · '+count+' ↗</small>');
-fs.writeFileSync(file,html);console.log('Updated portfolio content.');
+// `--check` is what CI runs: fail when index.html has drifted from content.json.
+if(process.argv.includes('--check')){if(html!==fs.readFileSync(file,'utf8')){console.error('index.html is out of date with content.json. Run: npm run build:content');process.exit(1);}console.log('index.html matches content.json.');}
+else{fs.writeFileSync(file,html);console.log('Updated portfolio content.');}
 

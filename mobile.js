@@ -1,6 +1,6 @@
 (() => {
  const mobile=matchMedia('(max-width:700px), (max-height:500px) and (pointer:coarse)');
- const horizon=()=>{const scene=document.getElementById('scene');return document.querySelector('header').getBoundingClientRect().bottom;};
+ const horizon=()=>document.querySelector('header').getBoundingClientRect().bottom;
  let frame=0;
  function sync(){frame=0;if(mobile.matches)document.body.style.setProperty('--reading-top',(scrollY+horizon())+'px');}
  function schedule(){if(!frame)frame=requestAnimationFrame(sync);}

@@ -1,1 +1,17 @@
-{"name":"farhan-scroll-world","private":true,"type":"module","scripts":{"build:content":"node build-content.mjs"}}
+{
+  "name": "farhan-scroll-world",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:content": "node build-content.mjs",
+    "lint": "eslint .",
+    "check:content": "node build-content.mjs --check",
+    "check:links": "node scripts/check-links.mjs",
+    "check": "npm run lint && npm run check:content && npm run check:links"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "globals": "^17.14.0"
+  }
+}

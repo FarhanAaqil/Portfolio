@@ -194,7 +194,7 @@
     {
       "id": "visentra",
       "title": "Visentra",
-      "badge": "Smart India Hackathon 2026 · Winner",
+      "badge": "Internal SIH 2026 · 1st place",
       "description": "A forensic workstation for computer-vision supply chains. It ties cryptographic provenance — hashes, Merkle roots and Ed25519 signatures — to behavioural checks on one live lineage graph, so a poisoned sample, a flipped weight bit or a planted backdoor all surface in the same place.",
       "highlights": [
         "Four pillars: dataset integrity, model integrity, backdoor screening and inference binding",

@@ -38,7 +38,7 @@ const archiveGroups = [
   },
   {
     label: 'BEST OF THE VOYAGE · SHOWCASED IN SKYPIEA',
-    items: projects.map((p, i) => ({title: p.title, description: p.description, technologies: p.tags, github: p.github, demo: p.demo, tag: p.badge, anchor: 'project-' + (i + 1)}))
+    items: projects.map((p, i) => ({title: p.title, description: p.description, technologies: p.tags, github: p.github, demo: p.demo, thumb: p.thumb, tag: p.badge, anchor: 'project-' + (i + 1)}))
   },
   {label: 'MORE FROM THE LOGBOOK', items: data.archive.more}
 ];

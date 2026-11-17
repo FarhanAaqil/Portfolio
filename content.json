@@ -52,7 +52,12 @@
           "width": 1440,
           "height": 1000
         }
-      ]
+      ],
+      "thumb": {
+        "src": "assets/projects/thumbs/gateorchestra.webp",
+        "alt": "GateOrchestra — overview and key results",
+        "width": 640
+      }
     },
     {
       "id": "orchestrator-agent",
@@ -101,7 +106,12 @@
           "width": 1600,
           "height": 760
         }
-      ]
+      ],
+      "thumb": {
+        "src": "assets/projects/thumbs/orchestrator-agent.webp",
+        "alt": "Autonomous Orchestrator Agent — executive control plane",
+        "width": 640
+      }
     },
     {
       "id": "self-improving-agent",
@@ -143,7 +153,12 @@
           "width": 1440,
           "height": 1000
         }
-      ]
+      ],
+      "thumb": {
+        "src": "assets/projects/thumbs/self-improving-agent.webp",
+        "alt": "Self-Improving Code Agent — workbench",
+        "width": 640
+      }
     },
     {
       "id": "nebulalm",
@@ -213,7 +228,12 @@
           "width": 1440,
           "height": 800
         }
-      ]
+      ],
+      "thumb": {
+        "src": "assets/projects/thumbs/visentra.webp",
+        "alt": "Visentra — lineage view",
+        "width": 640
+      }
     }
   ],
   "archive": {
@@ -228,15 +248,10 @@
           "FastAPI",
           "RAG"
         ],
-        "github": "https://github.com/FarhanAaqil/Sheet-AI",
-        "thumb": {
-          "src": "assets/projects/thumbs/sheetsense-ai.webp",
-          "alt": "SheetSense AI workspace",
-          "width": 640
-        }
+        "github": "https://github.com/FarhanAaqil/Sheet-AI"
       },
       {
-        "title": "Cohere Aegis · Lemon Host Monitor",
+        "title": "LemonHost Monitor",
         "description": "A workforce operations platform bringing attendance, timesheets, leave, shifts and team oversight into a role-aware dashboard, with a Chrome extension for clock-in monitoring.",
         "technologies": [
           "React",
@@ -249,13 +264,13 @@
         ],
         "github": "https://github.com/farhansldm/LC-Monitor",
         "thumb": {
-          "src": "assets/projects/thumbs/cohere-aegis.webp",
-          "alt": "Workforce monitoring dashboard",
+          "src": "assets/projects/thumbs/lemonhost-monitor.webp",
+          "alt": "LemonHost Monitor command centre dashboard",
           "width": 640
         }
       },
       {
-        "title": "RankForge",
+        "title": "SLDM Seo",
         "description": "An SEO agency platform for managing clients, websites, keywords, audits and reporting. Combines a React interface with an Express API and PostgreSQL data model, with Redis-backed audit job dispatch.",
         "technologies": [
           "React",
@@ -269,13 +284,13 @@
         ],
         "github": "https://github.com/farhansldm/SLDM-seo",
         "thumb": {
-          "src": "assets/projects/thumbs/rankforge.webp",
-          "alt": "SEO command centre",
+          "src": "assets/projects/thumbs/sldm-seo.webp",
+          "alt": "SLDM Seo dashboard",
           "width": 640
         }
       },
       {
-        "title": "Adore Tea · QR Table Ordering",
+        "title": "Adore Tea - QR Table Ordering",
         "description": "A QR ordering system for the Adore Tea restaurant. Customers scan the code at their table and order straight from their phone, and the flow from table to kitchen is fully automated.",
         "technologies": [
           "QR Ordering",
@@ -293,7 +308,12 @@
           "Logistics Planning",
           "Human Sign-off"
         ],
-        "github": "https://github.com/FarhanAaqil/Crisis-Route"
+        "github": "https://github.com/FarhanAaqil/Crisis-Route",
+        "thumb": {
+          "src": "assets/projects/thumbs/crisisroute.webp",
+          "alt": "CrisisRoute plan sign-off dashboard",
+          "width": 640
+        }
       },
       {
         "title": "PatchGraph",
@@ -303,7 +323,12 @@
           "Supply-Chain Security",
           "Audit Log"
         ],
-        "github": "https://github.com/FarhanAaqil/PatchGraph"
+        "github": "https://github.com/FarhanAaqil/PatchGraph",
+        "thumb": {
+          "src": "assets/projects/thumbs/patchgraph.webp",
+          "alt": "PatchGraph home screen",
+          "width": 640
+        }
       },
       {
         "title": "AquaSphere",
@@ -313,7 +338,12 @@
           "Deep Learning",
           "Satellite Data"
         ],
-        "github": "https://github.com/FarhanAaqil/AquaSphere"
+        "github": "https://github.com/FarhanAaqil/AquaSphere",
+        "thumb": {
+          "src": "assets/projects/thumbs/aquasphere.webp",
+          "alt": "AquaSphere overview",
+          "width": 640
+        }
       },
       {
         "title": "GenAI Lab",
@@ -330,7 +360,7 @@
         "demo": "https://genai-lab-psi.vercel.app",
         "thumb": {
           "src": "assets/projects/thumbs/genai-lab.webp",
-          "alt": "GenAI Lab curriculum",
+          "alt": "GenAI Lab dashboard",
           "width": 640
         }
       },
@@ -344,12 +374,7 @@
           "Session Persistence"
         ],
         "github": "https://github.com/FarhanAaqil/interviewpro",
-        "demo": "https://claude.ai/public/artifacts/367d3360-5eab-4ff9-afe4-73b7c3050802",
-        "thumb": {
-          "src": "assets/projects/thumbs/interviewpro.webp",
-          "alt": "InterviewPro practice",
-          "width": 640
-        }
+        "demo": "https://claude.ai/public/artifacts/367d3360-5eab-4ff9-afe4-73b7c3050802"
       },
       {
         "title": "Samisthi Aranya Resorts",
@@ -361,7 +386,12 @@
           "Tailwind CSS"
         ],
         "github": "https://github.com/FarhanAaqil/Samisthi-Aranya-Resort",
-        "demo": "https://samisthiaranyaresort.vercel.app"
+        "demo": "https://samisthiaranyaresort.vercel.app",
+        "thumb": {
+          "src": "assets/projects/thumbs/samisthi-aranya.webp",
+          "alt": "Samisthi Aranya Resorts",
+          "width": 640
+        }
       }
     ]
   },

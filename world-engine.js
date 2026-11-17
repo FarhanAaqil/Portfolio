@@ -96,8 +96,9 @@ trail.computeLineDistances();
 scene.add(trail);
 
 // The ship and her crew.
+const SHIP_SCALE = 1.55;
 const ship = buildSunny(kit);
-ship.scale.setScalar(1.12);
+ship.scale.setScalar(SHIP_SCALE);
 scene.add(ship);
 const crew = createStrawHats(ship, kit);
 const crewSelect = $('#crew-select');
@@ -105,8 +106,8 @@ crew.forEach((person, i) => crewSelect.append(new Option(person.name, i)));
 
 // The Knock-Up Stream lifts the Sunny to the cloud sea; a balloon octopus lowers her back down.
 const stream = new T.Group();
-const streamColumn = new T.Mesh(new T.CylinderGeometry(2.4, 3.8, 1, 24, 1, true), new T.MeshBasicMaterial({color: '#8fd6d8', transparent: true, opacity: .78, side: T.DoubleSide}));
-const streamFoam = new T.Mesh(new T.TorusGeometry(4.4, .8, 8, 32), new T.MeshBasicMaterial({color: '#eefaf2'}));
+const streamColumn = new T.Mesh(new T.CylinderGeometry(3.6, 5.6, 1, 24, 1, true), new T.MeshBasicMaterial({color: '#8fd6d8', transparent: true, opacity: .78, side: T.DoubleSide}));
+const streamFoam = new T.Mesh(new T.TorusGeometry(6.4, 1, 8, 32), new T.MeshBasicMaterial({color: '#eefaf2'}));
 streamFoam.rotation.x = Math.PI / 2;
 streamFoam.position.y = .2;
 stream.add(streamColumn, streamFoam);
@@ -218,8 +219,8 @@ function paint(now) {
     lookAt.lerp(tmp.copy(ship.position).add(new T.Vector3(0, 5, 0)), .2);
   }
   if (inspectShip) {
-    lookAt.copy(ship.position).add(new T.Vector3(0, 3.6, 0));
-    camPos.copy(ship.position).add(new T.Vector3(mobile() ? 17 : 15, 11, mobile() ? 25 : 20).applyAxisAngle(UP, ship.rotation.y));
+    lookAt.copy(ship.position).add(new T.Vector3(0, 5, 0));
+    camPos.copy(ship.position).add(new T.Vector3(mobile() ? 23 : 20, 14, mobile() ? 33 : 26).applyAxisAngle(UP, ship.rotation.y));
   }
   if (exploring) {
     const offset = camPos.clone().sub(lookAt), spherical = new T.Spherical().setFromVector3(offset);
@@ -231,8 +232,11 @@ function paint(now) {
     const person = crew[crewFocus];
     ship.updateWorldMatrix(true, true);
     person.getWorldPosition(lookAt);
-    lookAt.y += .78 * person.scale.y;
-    camPos.copy(lookAt).add(new T.Vector3(Math.sin(.5 + yaw) * 2.9, .7 + pitch * 2, Math.cos(.5 + yaw) * 2.9).applyAxisAngle(UP, ship.rotation.y + person.rotation.y));
+    const size = person.scale.y * SHIP_SCALE;
+    lookAt.y += .82 * size;
+    // Stand just outboard of them, looking back in over the rail.
+    const bearing = person.userData.bearing + yaw;
+    camPos.copy(lookAt).add(new T.Vector3(Math.sin(bearing) * 1.3 * size, (.12 + pitch * 2) * size, Math.cos(bearing) * 1.3 * size).applyAxisAngle(UP, ship.rotation.y));
   }
 
   const [vw, vh] = viewSize();
@@ -281,7 +285,7 @@ function paint(now) {
   wake.position.y = alt + .1;
   wake.rotation.y = ship.rotation.y;
   wake.visible = !exploring && !airborne;
-  wake.scale.setScalar(1 + scrollEnergy * .35);
+  wake.scale.setScalar(SHIP_SCALE / 1.12 * (1 + scrollEnergy * .35));
 
   // Floating island label, footer route marker and navigation state.
   projected.copy(current.at).add(new T.Vector3(0, 14 + (current.altitude ?? 0), 0)).project(camera);

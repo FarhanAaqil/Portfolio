@@ -1,34 +1,54 @@
 // The Straw Hat crew in their post-timeskip outfits, hand-modelled as cel-shaded
 // figures. Bodies are built from one parametric figure; faces are drawn on a canvas
 // and wrapped onto the head so eyes, brows, scars and grins read like the anime.
-import {T, paint, v3} from './kit.js';
+import {T, mat, paint, v3} from './kit.js';
 import {DECK} from './sunny.js';
 
+// The crew are drawn a little larger than life so they read from the voyage camera.
+const CREW_SCALE = 1.22;
 const INK = '#1b2229', SKIN = '#f3c29b', TAN = '#d99a6c', WHITE = '#fbf7ea';
 
-// ---- Faces -----------------------------------------------------------------
-// Canvas is 256 square; the character's left eye is on the viewer's right.
-const EYE_Y = 116;
-function roundEyes(c, {gap = 44, r = 15, pupil = 5, y = EYE_Y} = {}) {
-  for (const side of [-1, 1]) {
-    c.fillStyle = '#fff'; c.strokeStyle = INK; c.lineWidth = 4;
-    c.beginPath(); c.arc(128 + side * gap, y, r, 0, Math.PI * 2); c.fill(); c.stroke();
-    c.fillStyle = INK; c.beginPath(); c.arc(128 + side * gap, y, pupil, 0, Math.PI * 2); c.fill();
+// Faces are lit more evenly than bodies, the way anime keeps a face readable in shadow.
+const faceSkins = new Map();
+function faceSkin(color) {
+  if (!faceSkins.has(color)) {
+    const material = new T.MeshToonMaterial({color, gradientMap: mat(color).gradientMap, emissive: color, emissiveIntensity: .42});
+    material.userData.toon = true;
+    faceSkins.set(color, material);
   }
+  return faceSkins.get(color);
 }
-function lashEyes(c, iris, {gap = 44, y = EYE_Y} = {}) {
+
+// ---- Faces -----------------------------------------------------------------
+// Drawn in a 256-unit space on a 512px canvas; the character's left eye is on the viewer's right.
+const EYE_Y = 120;
+/** Oda's round eyes: white, a firm outline, a small pupil and a glint. */
+function roundEyes(c, {gap = 46, r = 20, pupil = 7, y = EYE_Y} = {}) {
   for (const side of [-1, 1]) {
     const x = 128 + side * gap;
-    c.fillStyle = '#fff'; c.beginPath(); c.ellipse(x, y, 19, 16, 0, 0, Math.PI * 2); c.fill();
-    c.fillStyle = iris; c.beginPath(); c.arc(x, y + 1, 11, 0, Math.PI * 2); c.fill();
-    c.fillStyle = INK; c.beginPath(); c.arc(x, y + 1, 5, 0, Math.PI * 2); c.fill();
-    c.fillStyle = '#fff'; c.beginPath(); c.arc(x - 4, y - 4, 3, 0, Math.PI * 2); c.fill();
-    c.strokeStyle = INK; c.lineWidth = 6; c.lineCap = 'round';
-    c.beginPath(); c.moveTo(x - 21, y - 6); c.quadraticCurveTo(x, y - 24, x + 21, y - 6); c.stroke();
-    c.lineWidth = 4; c.beginPath(); c.moveTo(x + side * 20, y - 8); c.lineTo(x + side * 29, y - 15); c.stroke();
+    c.fillStyle = '#fff'; c.strokeStyle = INK; c.lineWidth = 5;
+    c.beginPath(); c.arc(x, y, r, 0, Math.PI * 2); c.fill(); c.stroke();
+    c.fillStyle = INK; c.beginPath(); c.arc(x, y, pupil, 0, Math.PI * 2); c.fill();
+    c.fillStyle = '#fff'; c.beginPath(); c.arc(x - pupil * .35, y - pupil * .35, pupil * .3, 0, Math.PI * 2); c.fill();
   }
 }
-function brows(c, tilt = 0, {gap = 44, y = EYE_Y - 30, width = 7, len = 20, color = INK} = {}) {
+/** Large lashed eyes with a shaded iris, for Nami and Robin. */
+function lashEyes(c, iris, {gap = 46, y = EYE_Y} = {}) {
+  for (const side of [-1, 1]) {
+    const x = 128 + side * gap;
+    c.fillStyle = '#fff'; c.beginPath(); c.ellipse(x, y, 25, 22, 0, 0, Math.PI * 2); c.fill();
+    const shade = c.createLinearGradient(0, y - 16, 0, y + 16); shade.addColorStop(0, INK); shade.addColorStop(.45, iris); shade.addColorStop(1, '#fff');
+    c.fillStyle = shade; c.beginPath(); c.ellipse(x, y + 2, 15, 17, 0, 0, Math.PI * 2); c.fill();
+    c.fillStyle = INK; c.beginPath(); c.arc(x, y + 2, 6, 0, Math.PI * 2); c.fill();
+    c.fillStyle = '#fff'; c.beginPath(); c.arc(x - 6, y - 6, 4.5, 0, Math.PI * 2); c.fill(); c.beginPath(); c.arc(x + 6, y + 9, 2.2, 0, Math.PI * 2); c.fill();
+    c.strokeStyle = INK; c.lineWidth = 7; c.lineCap = 'round';
+    c.beginPath(); c.moveTo(x - 27, y - 6); c.quadraticCurveTo(x, y - 32, x + 27, y - 6); c.stroke();
+    c.lineWidth = 4;
+    for (const flick of [18, 26]) { c.beginPath(); c.moveTo(x + side * flick, y - 12); c.lineTo(x + side * (flick + 9), y - 22); c.stroke(); }
+    c.lineWidth = 2; c.beginPath(); c.moveTo(x - 16, y + 21); c.quadraticCurveTo(x, y + 26, x + 16, y + 21); c.stroke();
+  }
+}
+function brows(c, tilt = 0, {gap = 46, y = EYE_Y - 34, width = 7, len = 21, color = INK} = {}) {
   c.strokeStyle = color; c.lineWidth = width; c.lineCap = 'round';
   for (const side of [-1, 1]) { c.beginPath(); c.moveTo(128 + side * (gap - len), y + tilt); c.lineTo(128 + side * (gap + len), y - tilt); c.stroke(); }
 }
@@ -36,13 +56,15 @@ function line(c, points, width = 4, color = INK) {
   c.strokeStyle = color; c.lineWidth = width; c.lineCap = c.lineJoin = 'round';
   c.beginPath(); points.forEach(([x, y], i) => i ? c.lineTo(x, y) : c.moveTo(x, y)); c.stroke();
 }
-function grin(c, w = 46, y = 176, open = 22) {
+function grin(c, w = 50, y = 178, open = 24) {
   c.fillStyle = '#fff'; c.strokeStyle = INK; c.lineWidth = 4;
   c.beginPath(); c.moveTo(128 - w, y); c.quadraticCurveTo(128, y + open * 2, 128 + w, y); c.quadraticCurveTo(128, y + 6, 128 - w, y); c.fill(); c.stroke();
   line(c, [[128 - w * .8, y + open * .42], [128 + w * .8, y + open * .42]], 2);
+  for (let i = -3; i <= 3; i++) line(c, [[128 + i * w * .22, y + 5], [128 + i * w * .22, y + open * .9 - Math.abs(i) * 3]], 1.5);
 }
-const smile = (c, w = 22, y = 178, lift = 10) => { c.strokeStyle = INK; c.lineWidth = 4; c.lineCap = 'round'; c.beginPath(); c.moveTo(128 - w, y); c.quadraticCurveTo(128, y + lift, 128 + w, y); c.stroke(); };
-const nose = (c, y = 148) => line(c, [[126, y - 6], [131, y], [126, y + 3]], 3);
+const smile = (c, w = 22, y = 180, lift = 10) => { c.strokeStyle = INK; c.lineWidth = 4; c.lineCap = 'round'; c.beginPath(); c.moveTo(128 - w, y); c.quadraticCurveTo(128, y + lift, 128 + w, y); c.stroke(); };
+const nose = (c, y = 152) => line(c, [[126, y - 6], [131, y], [126, y + 3]], 3);
+const blush = c => { c.fillStyle = 'rgba(240,120,120,.3)'; for (const side of [-1, 1]) { c.beginPath(); c.ellipse(128 + side * 56, 152, 16, 8, 0, 0, Math.PI * 2); c.fill(); } };
 
 // ---- Figure ----------------------------------------------------------------
 export function createStrawHats(ship, kit) {
@@ -53,70 +75,87 @@ export function createStrawHats(ship, kit) {
   function head(parent, y, skin, draw, scale = 1) {
     const h = group(parent, 0, y, 0);
     h.scale.setScalar(scale);
-    sphere(0, 0, 0, 1, skin, h, .1, .112, .104, 18);
-    for (const side of [1, -1]) sphere(side * .1, -.012, -.005, .022, skin, h, .6, 1.2, 1, 6);
+    const lit = faceSkin(skin);
+    sphere(0, 0, 0, 1, lit, h, .102, .112, .102, 22);
+    sphere(0, -.066, .012, 1, lit, h, .066, .056, .07, 14);                    // jaw and chin
+    for (const side of [1, -1]) sphere(side * .1, -.012, -.005, .024, lit, h, .6, 1.2, 1, 8);
     if (draw) {
-      const geometry = new T.SphereGeometry(1.014, 18, 14, Math.PI / 2 - .95, 1.9, Math.PI / 2 - .8, 1.6);
-      const face = new T.Mesh(geometry, new T.MeshBasicMaterial({map: paint(256, 256, draw), transparent: true, depthWrite: false}));
-      face.scale.set(.1, .112, .104);
+      const geometry = new T.SphereGeometry(1.014, 22, 16, Math.PI / 2 - .95, 1.9, Math.PI / 2 - .8, 1.6);
+      const texture = paint(512, 512, c => {
+        c.scale(2, 2);
+        const shadow = c.createLinearGradient(0, 0, 0, 80); shadow.addColorStop(0, 'rgba(110,60,40,.32)'); shadow.addColorStop(1, 'rgba(110,60,40,0)');
+        c.fillStyle = shadow; c.fillRect(0, 0, 256, 80);                       // shade under the fringe
+        draw(c);
+      });
+      const face = new T.Mesh(geometry, new T.MeshBasicMaterial({map: texture, transparent: true, depthWrite: false}));
+      face.scale.set(.102, .112, .102);
       h.add(face);
     }
     return h;
   }
   /** Hair shell over the top and back of the skull, tipped back to leave the face clear. */
   function scalp(h, color, tip = -.5, drop = .56, grow = 1.07) {
-    const cap = kit.mesh(new T.SphereGeometry(1, 16, 10, 0, Math.PI * 2, 0, Math.PI * drop), color, 0, .004, -.004, h);
-    cap.scale.set(.1 * grow, .112 * grow, .104 * grow); cap.rotation.x = tip;
+    const cap = kit.mesh(new T.SphereGeometry(1, 20, 12, 0, Math.PI * 2, 0, Math.PI * drop), color, 0, .004, -.004, h);
+    cap.scale.set(.102 * grow, .112 * grow, .104 * grow); cap.rotation.x = tip;
     return cap;
   }
-  const tuft = (h, x, y, z, r, len, color, rx = 0, rz = 0) => { const t = cone(x, y, z, r, len, color, h, 5); t.rotation.set(rx, 0, rz); return t; };
+  const tuft = (h, x, y, z, r, len, color, rx = 0, rz = 0) => { const t = cone(x, y, z, r, len, color, h, 6); t.rotation.set(rx, 0, rz); return t; };
 
   /**
-   * A standing human. `o` carries colours, proportions and a pose:
+   * A standing figure in anime proportions: a large head on a tapered torso, with
+   * rounded joints. `o` carries colours, proportions and a pose:
    *   pose.L / pose.R = [swing out, swing forward, elbow bend] in radians.
    */
   function figure(name, o) {
     const root = new T.Group(); root.name = name;
-    const w = o.build ?? 1, skin = o.skin ?? SKIN, arm = o.arm ?? {}, leg = o.leg ?? {};
-    const hands = {};
+    const w = o.build ?? 1, skin = o.skin ?? SKIN, arm = o.arm ?? {}, leg = o.leg ?? {}, depth = o.depth ?? 1;
+    const lt = leg.thick ?? 1, at = arm.thick ?? 1, af = arm.fore ?? at, hands = {};
+    const thigh = leg.thigh ?? '#30415c', shin = leg.shin ?? thigh, upper = arm.upper ?? skin, lower = arm.lower ?? upper;
     for (const side of [1, -1]) {
-      const hip = v3(side * .06 * w, .54, 0), ankle = v3(side * (.068 * w + (o.stance ?? .015)), .06, 0), knee = hip.clone().lerp(ankle, .5).add(v3(0, 0, .012));
-      rod(hip, knee, .054 * w * (leg.thick ?? 1), leg.thigh ?? '#30415c', root, .046 * w * (leg.thick ?? 1), 8);
-      rod(knee, ankle, .044 * w * (leg.thick ?? 1), leg.shin ?? leg.thigh ?? '#30415c', root, .034 * w * (leg.thick ?? 1), 8);
-      if (leg.cuff) torus(knee.x, knee.y - .01, knee.z, .05 * w, .016, leg.cuff, root).rotation.x = Math.PI / 2;
-      sphere(ankle.x, .035, .035, .05, leg.shoe ?? '#3b2a20', root, .85 * w, .7, 1.7, 8);
+      const hip = v3(side * .058 * w, .53, 0), ankle = v3(side * (.066 * w + (o.stance ?? .015)), .07, 0), knee = hip.clone().lerp(ankle, .5).add(v3(0, 0, .012));
+      rod(hip, knee, .066 * w * lt, thigh, root, .054 * w * lt, 10);
+      sphere(knee.x, knee.y, knee.z, .053 * w * lt, leg.cuff ? thigh : shin, root, 1, 1, 1, 8);
+      rod(knee, ankle, .05 * w * lt, shin, root, .038 * w * lt, 10);
+      if (leg.cuff) torus(knee.x, knee.y - .012, knee.z, .056 * w * lt, .018, leg.cuff, root).rotation.x = Math.PI / 2;
+      sphere(ankle.x, .04, .04, .06, leg.shoe ?? '#3b2a20', root, .9 * w, .7, 1.75, 10);
 
       const [out, forward, bend] = (side > 0 ? o.pose?.L : o.pose?.R) ?? [.12, 0, .15];
-      const shoulder = v3(side * (o.shoulders ?? .148) * w, .835, 0);
+      const shoulder = v3(side * (o.shoulders ?? .15) * w, .83, 0);
       const dir = v3(0, -1, 0).applyAxisAngle(v3(0, 0, 1), side * out).applyAxisAngle(v3(1, 0, 0), -forward);
       const elbow = shoulder.clone().addScaledVector(dir, .2 * (arm.len ?? 1));
-      const dir2 = dir.clone().applyAxisAngle(v3(1, 0, 0), -bend);
-      const wrist = elbow.clone().addScaledVector(dir2, .19 * (arm.len ?? 1));
-      sphere(shoulder.x, shoulder.y, 0, .045 * w * (arm.thick ?? 1), arm.upper ?? skin, root, 1, 1, 1, 8);
-      rod(shoulder, elbow, .04 * w * (arm.thick ?? 1), arm.upper ?? skin, root, .034 * w * (arm.thick ?? 1), 8);
-      rod(elbow, wrist, .034 * w * (arm.fore ?? arm.thick ?? 1), arm.lower ?? arm.upper ?? skin, root, .028 * w * (arm.fore ?? arm.thick ?? 1), 8);
-      sphere(wrist.x, wrist.y, wrist.z, .036 * (arm.hand ?? 1), arm.glove ?? skin, root, 1, 1.1, 1, 8);
+      const wrist = elbow.clone().addScaledVector(dir.clone().applyAxisAngle(v3(1, 0, 0), -bend), .19 * (arm.len ?? 1));
+      sphere(shoulder.x, shoulder.y, 0, .054 * w * at, upper, root, 1, 1, 1, 10);
+      rod(shoulder, elbow, .047 * w * at, upper, root, .041 * w * at, 10);
+      sphere(elbow.x, elbow.y, elbow.z, .041 * w * Math.max(at, af * .8), lower, root, 1, 1, 1, 8);
+      rod(elbow, wrist, .041 * w * af, lower, root, .033 * w * af, 10);
+      sphere(wrist.x, wrist.y, wrist.z, .043 * (arm.hand ?? 1), arm.glove ?? skin, root, 1, 1.15, .85, 10);
       hands[side > 0 ? 'L' : 'R'] = wrist;
     }
-    sphere(0, .575, 0, 1, o.hips ?? leg.thigh ?? '#30415c', root, .112 * w, .1, .082 * w, 12);
-    sphere(0, .74, 0, 1, o.chest ?? skin, root, .138 * w, .14, .086 * w * (o.depth ?? 1), 14);
-    if (o.jacket) {                                         // open-fronted shirt or coat over a bare chest
-      const gap = o.open ?? .9;
-      const shell = kit.mesh(new T.SphereGeometry(1, 16, 10, Math.PI / 2 + gap / 2, Math.PI * 2 - gap), o.jacket, 0, .74, 0, root);
-      shell.scale.set(.146 * w, .148, .094 * w * (o.depth ?? 1));
+    // Torso: hips, then a chest that widens to the shoulders, flattened front to back.
+    const turned = (profile, color, flat = .62) => { const part = lathe(profile.map(([r, y]) => [r * w, y]), color, root, 0, 0, 0, 18); part.scale.z = flat * depth; return part; };
+    turned([[0, .5], [.098, .512], [.11, .56], [.092, .645]], o.hips ?? thigh);
+    turned([[.09, .635], [.106, .7], [.137, .79], [.141, .835], [.1, .876], [.034, .9]], o.chest ?? skin);
+    if (o.jacket) {                                         // open-fronted shirt or coat over the chest
+      const gap = o.open ?? .9, points = [[.096, .62], [.114, .7], [.146, .79], [.151, .84], [.108, .888]].map(([r, y]) => new T.Vector2(r * w, y));
+      kit.mesh(new T.LatheGeometry(points, 18, gap / 2, Math.PI * 2 - gap), o.jacket, 0, 0, 0, root).scale.z = .68 * depth;
     }
-    if (o.sash) torus(0, .625, 0, .108 * w, .026, o.sash, root).rotation.x = Math.PI / 2;
-    cyl(0, .885, 0, .03 * w, .034 * w, .06, skin, root, 8);
-    const h = head(root, .985, o.headSkin ?? skin, o.face, o.headScale ?? 1);
+    if (o.sash) { const band = torus(0, .635, 0, .098 * w, .026, o.sash, root); band.rotation.x = Math.PI / 2; band.scale.y = .66 * depth; }
+    cyl(0, .905, 0, .032 * w, .038 * w, .07, skin, root, 10);
+    const headScale = (o.headScale ?? 1) * 1.28;
+    const h = head(root, .915 + .1 * headScale, o.headSkin ?? skin, o.face, headScale);
     return {root, head: h, hands};
   }
 
-  /** Puts a finished figure on the ship, merges it, and gives it an ink outline. */
-  function board(person, x, y, z, facing = 0, scale = 1) {
+  /**
+   * Puts a finished figure on the ship, merges it, and gives it an ink outline.
+   * `bearing` is the clear direction (from the bow, in radians) the portrait camera views them from.
+   */
+  function board(person, x, y, z, facing = 0, scale = 1, bearing = x < 0 ? -.85 : .85) {
     const {root} = person;
-    root.position.set(x, y, z); root.rotation.y = facing; root.scale.setScalar(scale);
+    root.userData.bearing = bearing;
+    root.position.set(x, y, z); root.rotation.y = facing; root.scale.setScalar(scale * CREW_SCALE);
     ship.add(root);
-    batch(root, {ink: .75});
+    batch(root, {ink: 1});
     crew.push(root);
     return root;
   }
@@ -151,13 +190,13 @@ export function createStrawHats(ship, kit) {
     cyl(-.14, .66 + i * .012, .08 + dz, .028, .028, .008, '#e9ad32', zoro.root, 8).rotation.x = 1.4;
   });
   torus(.185, .72, 0, .045, .016, '#20252b', zoro.root).rotation.y = Math.PI / 2;                        // bandana on the arm
-  board(zoro, 1.0, lawn, 1.25, -.5, 1.08);
+  board(zoro, 1.05, lawn, 1.5, .6, 1.08, .9);
 
   // Nami: long orange hair, green-striped bikini top, jeans, Clima-Tact.
   const nami = figure('Nami', {
     chest: SKIN, hips: '#3d6fa5', leg: {thigh: '#3d6fa5', shin: '#3d6fa5', shoe: '#e8842c', thick: .9}, build: .86, arm: {thick: .8},
     pose: {L: [.25, .2, .5], R: [.5, .3, 1.5]},
-    face(c) { lashEyes(c, '#8a5a2b'); brows(c, -3, {width: 4, color: '#c8641e'}); nose(c); smile(c, 20, 176, 12); }
+    face(c) { lashEyes(c, '#9a5a24'); brows(c, -3, {width: 4, color: '#c8641e'}); nose(c); blush(c); smile(c, 22, 180, 13); }
   });
   sphere(0, .775, .02, 1, '#4f9d63', nami.root, .118, .05, .082, 12); for (const x of [-.05, .05]) sphere(x, .775, .06, .052, '#eef3e2', nami.root, 1, .9, .8, 8);
   sphere(.125, .8, .0, .016, '#3d6fa5', nami.root, 1, 1, .5, 6);                                         // shoulder tattoo
@@ -166,7 +205,7 @@ export function createStrawHats(ship, kit) {
   for (const side of [1, -1]) { sphere(side * .085, -.07, .03, .03, '#f08a2c', nami.head, .8, 2.6, .9, 8); tuft(nami.head, side * .05, .06, .09, .03, .08, '#f08a2c', 2.4, side * .5); }
   rod(nami.hands.R.clone().add(v3(0, -.22, .0)), nami.hands.R.clone().add(v3(.02, .42, .06)), .012, '#4d8fd1', nami.root, .012, 6);
   sphere(nami.hands.R.x + .02, nami.hands.R.y + .44, nami.hands.R.z + .06, .03, '#8fd0ee', nami.root, 1, 1, 1, 8);
-  board(nami, .62, fore, 2.75, .35, .98);
+  board(nami, .95, fore, 2.55, .5, .98, 1);
 
   // Usopp: long nose, curly ponytail, hat and goggles, suspenders, Kuro Kabuto.
   const usopp = figure('Usopp', {
@@ -183,7 +222,7 @@ export function createStrawHats(ship, kit) {
   const sling = usopp.hands.L; rod(sling.clone().add(v3(0, -.05, 0)), sling.clone().add(v3(0, .08, .02)), .012, INK, usopp.root, .012, 5);
   for (const dx of [-.05, .05]) rod(sling.clone().add(v3(0, .08, .02)), sling.clone().add(v3(dx, .19, .03)), .01, INK, usopp.root, .01, 5);
   sphere(-.13, .56, -.07, .06, '#b3312a', usopp.root, 1, 1.1, .7, 8);                                    // satchel
-  board(usopp, -.62, fore, 2.95, -.25, .97);
+  board(usopp, -.9, fore, 2.75, -.45, .97, -1);
 
   // Sanji: blond fringe over one eye, curled brow, black suit, cigarette.
   const sanji = figure('Sanji', {
@@ -196,7 +235,7 @@ export function createStrawHats(ship, kit) {
   scalp(sanji.head, '#f1d06a', -.42, .58, 1.08);
   sphere(-.05, .03, .085, .06, '#f1d06a', sanji.head, 1, 1.5, .5, 8);                                   // fringe over his right eye
   rod(v3(.03, -.06, .1), v3(.07, -.065, .17), .006, WHITE, sanji.head, .006, 4);                         // cigarette
-  board(sanji, .55, lawn, -.8, .2, 1.05);
+  board(sanji, .75, lawn, -.95, .6, 1.05, 1.1);
 
   // Tony Tony Chopper: blue nose, antlers, the pink hat under its blue cap, backpack.
   const chopper = new T.Group(); chopper.name = 'Tony Tony Chopper';
@@ -205,20 +244,20 @@ export function createStrawHats(ship, kit) {
   for (const x of [-.07, 0, .07]) box(x, .2, .0, .02, .27, .225, '#f0b63c', chopper);
   sphere(0, .1, 0, 1, '#e8842c', chopper, .125, .08, .105, 10);
   for (const side of [1, -1]) { rod(v3(side * .06, .08, 0), v3(side * .07, .015, .02), .04, fur, chopper, .04, 6); sphere(side * .07, .012, .04, .035, '#3b2a20', chopper, 1, .5, 1.5, 6); rod(v3(side * .13, .26, 0), v3(side * .2, .16, .04), .03, fur, chopper, .026, 6); sphere(side * .2, .15, .045, .03, '#3b2a20', chopper, 1, 1, 1, 6); }
-  const chopperHead = head(chopper, .43, fur, c => { roundEyes(c, {gap: 50, r: 20, pupil: 8, y: 124}); smile(c, 20, 196, 12); }, 1.45);
+  const chopperHead = head(chopper, .43, fur, c => { roundEyes(c, {gap: 52, r: 24, pupil: 11, y: 126}); blush(c); smile(c, 20, 198, 12); }, 1.45);
   sphere(0, -.03, .1, .03, '#3f7ad0', chopperHead, 1.2, .9, 1, 8);
   lathe([[.125, 0], [.13, .06], [.1, .13], [0, .16]], '#3f8fd6', chopperHead, 0, .035, 0, 16); cyl(0, .035, 0, .17, .17, .016, '#ee86a8', chopperHead, 18);
   for (const tilt of [Math.PI / 4, -Math.PI / 4]) box(0, .11, .108, .08, .02, .01, WHITE, chopperHead).rotation.z = tilt;
   torus(0, .05, 0, .128, .014, '#f3e7c5', chopperHead).rotation.x = Math.PI / 2;
   for (const side of [1, -1]) { rod(v3(side * .09, .09, 0), v3(side * .2, .22, -.01), .014, '#7a5330', chopperHead, .012, 5); rod(v3(side * .15, .15, 0), v3(side * .21, .13, .04), .011, '#7a5330', chopperHead, .009, 5); rod(v3(side * .2, .22, -.01), v3(side * .17, .29, 0), .011, '#7a5330', chopperHead, .008, 5); sphere(side * .13, .0, -.02, .035, fur, chopperHead, .7, 1, 1.4, 6); }
   box(0, .2, -.13, .16, .17, .08, '#3f7ad0', chopper);
-  board({root: chopper}, -.42, lawn, .28, .25, 1.15);
+  board({root: chopper}, 1.1, DECK + .23, -.3, .9, 1.15, 1.35);   // standing on the bench
 
   // Nico Robin: long black hair swept back, sunglasses, zipped vest, pink sarong.
   const robin = figure('Nico Robin', {
     chest: '#6b4a9c', hips: '#e9a3b8', leg: {thigh: SKIN, shin: SKIN, shoe: '#c8508a', thick: .88}, build: .88, arm: {thick: .8},
     pose: {L: [.3, .5, 2.1], R: [.3, .5, 2.1]},
-    face(c) { lashEyes(c, '#3f79b8'); brows(c, -2, {width: 4}); nose(c, 150); smile(c, 16, 178, 8); }
+    face(c) { lashEyes(c, '#3f79b8'); brows(c, -2, {width: 4}); nose(c, 154); smile(c, 17, 182, 8); }
   });
   lathe([[.115, 0], [.125, -.2], [.12, -.44]], '#e9a3b8', robin.root, 0, .6, 0, 14); rod(v3(0, .86, .08), v3(0, .64, .085), .006, '#e9ad32', robin.root, .006, 4);
   scalp(robin.head, '#1d2330', -.38, .52, 1.07);
@@ -230,7 +269,7 @@ export function createStrawHats(ship, kit) {
   // Franky: blue hair, steel nose, huge forearms with stars, open aloha shirt, speedo.
   const franky = figure('Franky', {
     build: 1.55, depth: .8, shoulders: .185, jacket: '#c9372c', open: 1.5, hips: '#1c2126', leg: {thigh: SKIN, shin: SKIN, shoe: '#3b2a20', thick: .62},
-    arm: {upper: '#c9372c', lower: '#5aa4dc', thick: 1.1, fore: 2.5, hand: 1.9, len: 1.05}, pose: {L: [.85, .2, 1.0], R: [.85, .2, 1.0]}, stance: .05, headScale: .92,
+    arm: {upper: '#c9372c', lower: '#5aa4dc', thick: 1.1, fore: 2.5, hand: 1.9, len: 1.05}, pose: {L: [.5, .25, 1.1], R: [.5, .25, 1.1]}, stance: .05, headScale: .92,
     face(c) { c.fillStyle = INK; c.beginPath(); c.roundRect(64, 100, 128, 30, 10); c.fill(); brows(c, 6, {y: 86, width: 8, color: '#3f8fd6'}); c.fillStyle = '#9aa4ad'; c.strokeStyle = INK; c.lineWidth = 3; c.beginPath(); c.roundRect(116, 128, 24, 28, 5); c.fill(); c.stroke(); grin(c, 40, 176, 18); }
   });
   for (const side of [1, -1]) { sphere(side * .29, .86, 0, .085, '#c9372c', franky.root, 1, 1, 1, 10); const star = franky.hands[side > 0 ? 'L' : 'R']; sphere(star.x, star.y + .09, star.z + .09, .03, '#f4d24a', franky.root, 1.3, 1.3, .4, 5); }
@@ -239,7 +278,7 @@ export function createStrawHats(ship, kit) {
   sphere(0, .11, .03, .07, '#3f8fd6', franky.head, 1, .8, 1.3, 10);
   for (const side of [1, -1]) box(side * .098, -.03, .02, .015, .09, .05, '#3f8fd6', franky.head);
   for (const x of [-.045, 0, .045]) cone(x, -.12, .05, .02, .05, SKIN, franky.head, 5).rotation.x = Math.PI;
-  board(franky, .35, lawn, .05, -.15, 1.32);
+  board(franky, 0, lawn, -.2, .5, 1.32, .95);
 
   // Brook: skeleton in a crowned top hat with an afro, feather boa and cane sword.
   const brook = figure('Brook', {
@@ -247,12 +286,12 @@ export function createStrawHats(ship, kit) {
     pose: {L: [.25, .1, .3], R: [.45, .6, 1.3]},
     face(c) { c.fillStyle = INK; for (const side of [-1, 1]) { c.beginPath(); c.moveTo(128 + side * 44, 132); c.bezierCurveTo(128 + side * 76, 96, 128 + side * 50, 86, 128 + side * 44, 104); c.bezierCurveTo(128 + side * 38, 86, 128 + side * 12, 96, 128 + side * 44, 132); c.fill(); } c.beginPath(); c.moveTo(128, 140); c.lineTo(120, 158); c.lineTo(136, 158); c.fill(); line(c, [[86, 184], [170, 184]], 4); for (let i = 0; i < 7; i++) line(c, [[92 + i * 12, 174], [92 + i * 12, 196]], 3); }
   });
-  sphere(0, .07, -.02, .2, INK, brook.head, 1, .9, 1, 14);                                              // afro
+  sphere(0, .1, -.075, .17, INK, brook.head, 1.15, .95, 1, 14);                                              // afro
   cyl(0, .22, -.01, .1, .1, .17, INK, brook.head, 14); cyl(0, .14, -.01, .16, .16, .014, INK, brook.head, 16);
   for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2; cone(Math.sin(a) * .1, .2, -.01 + Math.cos(a) * .1, .022, .06, '#f1c232', brook.head, 4); }
   for (let i = 0; i < 12; i++) { const a = i / 12 * Math.PI * 2; sphere(Math.sin(a) * .15, .85 - Math.abs(Math.cos(a)) * .03, Math.cos(a) * .09, .04, '#f1c232', brook.root, 1, 1, 1, 6); }
   rod(brook.hands.R.clone().add(v3(0, .06, .02)), brook.hands.R.clone().add(v3(.02, -.42, .1)), .012, '#6b4a9c', brook.root, .01, 5);
-  board(brook, -1.0, lawn, 1.2, .55, 1.5);
+  board(brook, -1.05, lawn, 1.5, -.6, 1.5, -.9);
 
   // Jinbe: whale-shark fish-man, topknot, lightning brows, kimono and draped coat. At the helm.
   const jinbe = figure('Jinbe', {
@@ -264,7 +303,7 @@ export function createStrawHats(ship, kit) {
   lathe([[.24, .02], [.27, -.3], [.27, -.62]], '#20242b', jinbe.root, 0, .84, -.03, 14).scale.z = .8;   // coat over the shoulders
   scalp(jinbe.head, INK, -.6, .45, 1.05); sphere(0, .13, -.03, .04, INK, jinbe.head, 1, 1.2, 1, 8); cone(0, .2, -.05, .03, .09, INK, jinbe.head, 6);
   for (const side of [1, -1]) sphere(side * .1, -.05, .0, .03, '#f1c232', jinbe.head, .6, 2.2, 1.2, 6);
-  board(jinbe, 0, fore, 2.02, 0, 1.3);
+  board(jinbe, 0, fore, 2.02, 0, 1.3, .35);
 
   return crew;
 }

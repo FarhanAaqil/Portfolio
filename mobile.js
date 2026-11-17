@@ -1,23 +1,81 @@
+// Phone-only behaviour. The voyage window is pinned under the header (see mobile.css),
+// so navigation has to land headings just below it rather than at the top of the screen.
 (() => {
- const mobile=matchMedia('(max-width:700px), (max-height:500px) and (pointer:coarse)');
- const horizon=()=>document.querySelector('header').getBoundingClientRect().bottom;
- let frame=0;
- function sync(){frame=0;if(mobile.matches)document.body.style.setProperty('--reading-top',(scrollY+horizon())+'px');}
- function schedule(){if(!frame)frame=requestAnimationFrame(sync);}
- addEventListener('scroll',schedule,{passive:true});addEventListener('resize',schedule);mobile.addEventListener('change',schedule);sync();
- const exit=document.createElement('button');exit.id='mobile-exit';exit.textContent='Back to voyage';exit.addEventListener('click',()=>window.dispatchEvent(new Event('voyage-navigate')));document.body.append(exit);
- const zoom=document.createElement('button');zoom.id='artifact-zoom';zoom.type='button';zoom.textContent='Zoom screenshot';zoom.setAttribute('aria-pressed','false');
- const visual=document.getElementById('artifact-visual');document.querySelector('.artifact-pagination').append(zoom);
- function reset(){visual.classList.remove('artifact-zoomed');zoom.textContent='Zoom screenshot';zoom.setAttribute('aria-pressed','false');}
- zoom.addEventListener('click',()=>{const active=visual.classList.toggle('artifact-zoomed');zoom.textContent=active?'Fit screenshot':'Zoom screenshot';zoom.setAttribute('aria-pressed',String(active));});
- new MutationObserver(()=>{reset();zoom.hidden=!visual.querySelector('img');}).observe(visual,{childList:true});
- document.getElementById('artifact-view').addEventListener('close',reset);
- // Align destination headings below the diorama instead of hiding them behind it.
- const sail=window.sailTo;
- window.sailTo=id=>{if(!mobile.matches||document.body.classList.contains('reading-view'))return sail(id);window.dispatchEvent(new Event('voyage-navigate'));const dialog=document.getElementById('map-dialog');if(dialog.open)dialog.close();const target=document.getElementById(id);if(!target)return;history.replaceState(null,'','#'+id);const heading=target.querySelector('.world-copy');scrollTo({top:Math.max(0,heading.getBoundingClientRect().top+scrollY-horizon()-24),behavior:'instant'});schedule();};
- document.querySelector('main').addEventListener('focusin',e=>{if(!mobile.matches||!e.target.matches(':focus-visible')||document.body.classList.contains('reading-view'))return;const top=e.target.getBoundingClientRect().top;if(top<horizon()+12)scrollBy(0,top-horizon()-24);});
+  const phone = matchMedia('(max-width:700px), (max-height:500px) and (pointer:coarse)');
+  const reading = () => document.body.classList.contains('reading-view');
+  /** Bottom edge of whatever is pinned to the top: the header, plus the voyage window when it is showing. */
+  const horizon = () => {
+    const header = document.querySelector('header').getBoundingClientRect().bottom;
+    const stage = document.getElementById('scene').getBoundingClientRect();
+    return reading() || !stage.height ? header : Math.max(header, stage.bottom);
+  };
+
+  // Chart and menu navigation: put the chapter heading right under the window.
+  const sail = window.sailTo;
+  window.sailTo = id => {
+    if (!phone.matches) return sail(id);
+    const target = document.getElementById(id);
+    if (!target) return;
+    window.dispatchEvent(new Event('voyage-navigate'));
+    const dialog = document.getElementById('map-dialog');
+    if (dialog.open) dialog.close();
+    history.replaceState(null, '', '#' + id);
+    scrollTo({top: Math.max(0, target.getBoundingClientRect().top + scrollY - horizon()), behavior: 'instant'});
+  };
+  addEventListener('load', () => {
+    const id = location.hash.slice(1);
+    if (phone.matches && document.getElementById(id)?.classList.contains('chapter')) window.sailTo(id);
+  }, {once: true});
+
+  // Keyboard focus never hides behind the window.
+  document.querySelector('main').addEventListener('focusin', event => {
+    if (!phone.matches || !event.target.matches(':focus-visible')) return;
+    const top = event.target.getBoundingClientRect().top;
+    if (top < horizon() + 12) scrollBy(0, top - horizon() - 24);
+  });
+
+  // A way back out of look-around mode, where the header buttons are hidden.
+  const exit = document.createElement('button');
+  exit.id = 'mobile-exit';
+  exit.textContent = 'Back to voyage';
+  exit.addEventListener('click', () => window.dispatchEvent(new Event('voyage-navigate')));
+  document.body.append(exit);
+
+  // Screenshots open fitted to the screen; this lets you zoom in and pan.
+  const visual = document.getElementById('artifact-visual');
+  const zoom = document.createElement('button');
+  zoom.id = 'artifact-zoom';
+  zoom.type = 'button';
+  const setZoom = on => {
+    visual.classList.toggle('artifact-zoomed', on);
+    zoom.textContent = on ? 'Fit screenshot' : 'Zoom screenshot';
+    zoom.setAttribute('aria-pressed', String(on));
+  };
+  setZoom(false);
+  zoom.addEventListener('click', () => setZoom(!visual.classList.contains('artifact-zoomed')));
+  document.querySelector('.artifact-pagination').append(zoom);
+  new MutationObserver(() => {
+    setZoom(false);
+    zoom.hidden = !visual.querySelector('img');
+  }).observe(visual, {childList: true});
+  document.getElementById('artifact-view').addEventListener('close', () => setZoom(false));
+
+  // The header has no room for these on a phone, so they live in the chart.
+  const actions = document.createElement('div');
+  actions.className = 'mobile-chart-actions';
+  for (const [label, id] of [['Meet the crew', 'crew-open'], ['Explore the Sunny', 'inspect-sunny'], ['Look around', 'look']]) {
+    const button = document.createElement('button');
+    button.textContent = label;
+    button.addEventListener('click', () => {
+      document.getElementById('map-dialog').close();
+      document.getElementById(id).click();
+    });
+    actions.append(button);
+  }
+  const resume = document.createElement('a');
+  resume.href = 'Farhan_Aaqil_Resume_main.pdf';
+  resume.textContent = 'Download résumé';
+  resume.download = '';
+  actions.append(resume);
+  document.getElementById('map-dialog').append(actions);
 })();
-// Direct destination links use the same visible heading alignment as chart navigation.
-addEventListener('load',()=>{const id=location.hash.slice(1);if(matchMedia('(max-width:700px), (max-height:500px) and (pointer:coarse)').matches && document.getElementById(id)?.classList.contains('chapter'))window.sailTo(id);},{once:true});
-// Keep exploration tools accessible from the phone's destination chart.
-(()=>{const row=document.createElement('div');row.className='mobile-chart-actions';for(const [label,id] of [['Meet the crew','crew-open'],['Explore the Sunny','inspect-sunny'],['Look around','look']]){const b=document.createElement('button');b.textContent=label;b.addEventListener('click',()=>{document.getElementById('map-dialog').close();document.getElementById(id).click();});row.append(b);}const a=document.createElement('a');a.href='Farhan_Aaqil_Resume_main.pdf';a.textContent='Download resume';a.download='';row.append(a);document.getElementById('map-dialog').append(row);})();

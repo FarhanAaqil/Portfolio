@@ -1,105 +1,217 @@
-/* Mobile voyage: a compact live diorama above readable, continuous content. */
-@media(max-width:700px), (max-height:500px) and (pointer:coarse){
- :root{--mobile-header:56px;--mobile-stage:clamp(150px,26svh,230px);--mobile-horizon:calc(var(--mobile-header) + var(--mobile-stage));--mobile-footer:calc(62px + env(safe-area-inset-bottom,0px))}
- html{scroll-padding-top:calc(var(--mobile-horizon) + 24px)}
- body{background:#edf0df}
- header{height:calc(var(--mobile-header) + env(safe-area-inset-top,0px));padding:env(safe-area-inset-top,0px) 18px 0;background:#edf0df;align-items:center}
- header .brand{min-width:44px;min-height:44px;font-size:32px;line-height:44px}
- header nav{gap:12px}header nav button,header nav #map-open,header nav #inspect-sunny{min-width:44px;min-height:44px;padding:8px 3px!important;font-size:12px!important}
- #scene{top:calc(var(--mobile-header) + env(safe-area-inset-top,0px));bottom:auto;height:var(--mobile-stage);z-index:2;overflow:hidden}
- body:not(.reading-view) main{clip-path:inset(var(--reading-top) 0 0);pointer-events:auto}
- .vignette{z-index:2;top:calc(var(--mobile-horizon) - 1px + env(safe-area-inset-top,0px));background:#edf0df;bottom:0}
- .vignette::before,.vignette::after{display:none}
- #speed-lines{display:none}
- #landmark{z-index:3;left:18px!important;top:calc(var(--mobile-header) + 12px + env(safe-area-inset-top,0px))!important;transform:none;max-width:calc(100vw - 36px);white-space:normal;font-size:17px;text-shadow:0 1px 5px #eff4df}
- #landmark small{font-size:9px;line-height:1.5;letter-spacing:.04em;max-width:100%}.landmark-dot,#landmark::after{display:none}
- .chapter,.chapter:first-child{padding:calc(var(--mobile-horizon) + 24px + env(safe-area-inset-top,0px)) 22px 80px;min-height:0}
- .chapter:first-child{min-height:100svh}.chapter + .chapter{padding-top:64px}
- .chapter:last-child,#contact{padding-top:64px;min-height:0;padding-bottom:calc(var(--mobile-footer) + 60px)}
- .world-copy,.intro{width:100%;max-width:none}
- #foosha h1{font-size:clamp(58px,17vw,82px);line-height:.98;margin-bottom:24px}
- .world-copy>h2{font-size:clamp(35px,10vw,46px);margin-bottom:32px;max-width:100%}
- .eyebrow,.discovery .eyebrow,.log-entry .eyebrow{font-size:10px;line-height:1.7;letter-spacing:.08em}
- .world-copy p,.discovery-copy p,#egghead .log-entry p{font-size:16px;line-height:1.75;max-width:none}
- .intro-location{font-size:11px;line-height:1.7;display:inline-block;margin-top:12px}
- .primary,.quick-work,.return{min-height:44px;font-size:13px;display:inline-flex;align-items:center;margin-left:0;margin-right:18px}
- .hint{font-size:10px;line-height:1.7;margin-top:24px}
- .about-moment,.about-moment[data-side=right]{min-height:0;width:100%;padding:12px 0;margin:0 0 30px}
- .about-moment .lead{font:28px/1.4 Georgia,serif}.about-moment p{font-size:17px}
- .facts{min-height:0;padding:12px 0 24px;margin:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.facts b{font-size:48px}.facts span{font-size:9px;letter-spacing:0}
- .skill-list>.skill-stop,.skill-stop:nth-child(5){width:100%;min-height:0;padding:28px 0 36px;gap:28px;margin:0}
- .skill-stop h3{font-size:29px;line-height:1.15}.skill-stop p{font-size:14px!important;line-height:1.85!important;max-width:none}
- .discovery,.discovery[data-composition=wide],.discovery[data-prominence=featured]{min-height:0;display:flex;gap:24px;padding:32px 0 64px;perspective:none}
- .discovery:first-of-type{margin-top:0}.discovery h3{font-size:clamp(32px,9.5vw,42px);margin-bottom:20px;overflow-wrap:anywhere}
- .discovery .tags{gap:8px 12px;margin-bottom:18px}.tags span{font-size:12px;line-height:1.7}.tags span:not(:last-child)::after{margin-left:6px}
- .highlights{font-size:14px;line-height:1.75}.project-links,.contact-links{flex-wrap:wrap;gap:8px 24px}.project-link,.contact-links a{font-size:13px;min-height:44px;display:inline-flex;align-items:center}
- .project-artifact,.discovery[data-composition=elevated] .project-artifact{margin:0;max-width:none;width:100%}
- .artifact-open,.discovery[data-side=right] .artifact-open{transform:none;filter:drop-shadow(0 8px 12px #173d401c)}
- .artifact-open:hover,.discovery[data-side=right] .artifact-open:hover{transform:none;filter:drop-shadow(0 8px 12px #173d401c)}
- .artifact-coordinate{font-size:10px}.artifact-cue{font-size:11px}.project-artifact figcaption{font-size:11px;line-height:1.6;margin-top:14px}
- #egghead .log-entry,#egghead .log-entry[data-side=right]{min-height:0;width:100%;padding:24px 0;margin:0 0 32px}
- #egghead .log-entry::before,#egghead .log-entry::after{display:none}.log-entry h3{font-size:30px}.cert-list{columns:1}.cert-list li{font-size:15px}.cert-list strong{font-size:12px}
- .contact-email{font-size:clamp(17px,5vw,23px);display:inline-block;min-height:44px}.credits{margin-top:32px!important}
- footer{min-height:var(--mobile-footer);padding:8px 12px calc(8px + env(safe-area-inset-bottom,0px));background:#edf0dff5;gap:6px;border-top:1px solid #173d4020;flex-wrap:nowrap}
- .route{flex:1;min-width:0}.compass{display:none}#destination{font-size:12px;min-height:44px;width:100%;max-width:190px;padding:8px 0}
- .footer-controls{gap:4px}#simple-view,#motion{min-height:44px;min-width:44px;font-size:11px;padding:8px 6px;max-width:76px;line-height:1.3}
- #map-dialog{width:100%;max-width:none;height:100dvh;max-height:none;margin:0;padding:calc(16px + env(safe-area-inset-top,0px)) 22px calc(30px + env(safe-area-inset-bottom,0px));border:0;background:#edf0df}
- #map-close{min-width:44px;min-height:44px}#map-dialog h2{font-size:36px}.map-grid{grid-template-columns:1fr;gap:0}.map-grid button{min-height:68px;grid-template-columns:28px 1fr;gap:2px 12px;padding:14px 0}.map-grid span{grid-row:1/3;align-self:center;font-size:11px}.map-grid strong{font-size:23px}.map-grid small{font-size:11px}
- #artifact-view{padding:calc(12px + env(safe-area-inset-top,0px)) 18px calc(32px + env(safe-area-inset-bottom,0px));overscroll-behavior:contain}
- #artifact-close{position:sticky;top:0;z-index:2;background:#e8ecdc;min-height:48px;font-size:12px;margin-bottom:24px;width:100%;text-align:left}
- .artifact-view-layout{gap:28px}.artifact-story h2{font-size:36px}.artifact-story p{font-size:16px;line-height:1.75}.artifact-pagination{font-size:11px;gap:12px;flex-wrap:wrap;line-height:1.5}
- #artifact-visual{overflow:auto;max-height:65dvh;overscroll-behavior:contain;touch-action:pan-x pan-y pinch-zoom}
- #artifact-visual.artifact-zoomed img{width:960px;max-width:none;max-height:none;height:auto}
- #artifact-zoom{min-height:44px;padding:8px 12px;background:none;border:1px solid #8c9e88;font:12px monospace;color:#173d40}
- .exploring #scene{top:var(--mobile-header);height:calc(100dvh - var(--mobile-header) - var(--mobile-footer));bottom:var(--mobile-footer)}
- #crew-panel{bottom:calc(var(--mobile-footer) + 12px);left:18px;right:18px;background:#edf0dff2;padding:16px;text-shadow:none}.exploring #crew-panel h2{font-size:27px;margin:4px 0 12px}#crew-panel::before{display:none}#crew-panel button,#crew-select{min-height:44px;font-size:13px}#crew-panel p{font-size:11px}
- #mobile-exit{position:fixed;z-index:12;right:18px;top:calc(var(--mobile-header) + 12px);min-height:44px;background:#edf0df;border:1px solid #8c9e88;padding:8px 12px;font:12px monospace}
- body:not(.exploring) #mobile-exit{display:none}
- .reading-view .chapter,.reading-view .chapter:first-child{padding-top:90px}.reading-view main{clip-path:none!important}.reading-view .chapter+.chapter{padding-top:32px}.reading-view .spatial-moment{margin:24px 0!important}.reading-view #foosha h1{font-size:64px}
-}
-@media(min-width:701px) and (min-height:501px), (min-width:701px) and (pointer:fine){#artifact-zoom,#mobile-exit{display:none}}
-@media(max-height:500px) and (pointer:coarse){:root{--mobile-stage:100px}.chapter:first-child{min-height:130svh}#landmark small{display:none}}
+/*
+ * Phone layout.
+ *
+ * The voyage is a window pinned under the header: the Sunny and the current
+ * island stay on screen the whole time. Everything you read scrolls in a sheet
+ * below that window and slides away underneath it, so nothing ever covers the ship.
+ */
+@media (max-width: 700px), (max-height: 500px) and (pointer: coarse) {
+  :root {
+    --mobile-header: calc(54px + env(safe-area-inset-top, 0px));
+    --mobile-stage: clamp(236px, 39svh, 350px);
+    --mobile-horizon: calc(var(--mobile-header) + var(--mobile-stage));
+    --mobile-footer: calc(56px + env(safe-area-inset-bottom, 0px));
+    --sheet: #edf0df;
+  }
+  html { scroll-padding-top: calc(var(--mobile-horizon) + 18px); }
+  body { background: var(--sheet); }
 
-@media(max-width:700px), (max-height:500px) and (pointer:coarse){
-header nav>a,header nav #look{display:none}.discovery-copy,.discovery[data-side=right] .discovery-copy{width:100%}.artifact-view-layout{display:flex;flex-direction:column;align-items:stretch}.about-moment[data-side=right]{margin-left:0}#position,.route-line{display:none}.discovery[data-side=right] .project-artifact{width:100%}.project-artifact{transform:none!important}.map-grid strong{line-height:1.2}
+  /* ---- The pinned voyage window ---- */
+  #scene {
+    position: fixed; inset: var(--mobile-header) 0 auto 0; height: var(--mobile-stage);
+    z-index: 4; overflow: hidden; pointer-events: none; background: #b8ddd7;
+  }
+  /* The rounded top edge of the reading sheet, tucked over the bottom of the window. */
+  #scene::after {
+    content: ''; position: absolute; inset: auto 0 -1px 0; height: 18px;
+    background: var(--sheet); border-radius: 18px 18px 0 0; box-shadow: 0 -6px 18px #173d4026;
+  }
+  .vignette, #speed-lines { display: none; }
+  #landmark {
+    z-index: 5; left: 16px !important; top: calc(var(--mobile-header) + 12px) !important; transform: none;
+    max-width: calc(100vw - 32px); white-space: normal; font-size: 18px; text-shadow: 0 1px 6px #eff4df, 0 0 14px #eff4df;
+  }
+  #landmark small { font-size: 9px; line-height: 1.6; letter-spacing: .08em; }
+  .landmark-dot, #landmark::after { display: none; }
+
+  /* ---- Header and footer ---- */
+  header {
+    height: var(--mobile-header); padding: env(safe-area-inset-top, 0px) 16px 0; align-items: center;
+    background: var(--sheet); border-bottom: 1px solid #173d4014; backdrop-filter: none;
+  }
+  header .brand { min-width: 44px; min-height: 44px; font-size: 30px; line-height: 44px; gap: 10px; }
+  header .brand small { display: block; margin-left: 4px; font: 9px/1.5 monospace; letter-spacing: .06em; }
+  header .brand small i { display: none; }
+  header nav { gap: 6px; }
+  header nav > a, header nav #look, header nav #crew-open, header nav #inspect-sunny { display: none; }
+  header nav #map-open, header nav a[data-sail=projects] {
+    display: inline-flex; align-items: center; min-width: 44px; min-height: 44px; padding: 8px 6px !important; font: 12px monospace !important;
+  }
+  footer {
+    min-height: var(--mobile-footer); padding: 6px 12px calc(6px + env(safe-area-inset-bottom, 0px)); gap: 6px; flex-wrap: nowrap;
+    background: #edf0dffa; border-top: 1px solid #173d4020; box-shadow: 0 -5px 20px #173d400d;
+  }
+  .route { flex: 1; min-width: 0; }
+  .compass, #position, .route-line { display: none; }
+  #destination { width: 100%; max-width: 190px; min-height: 44px; padding: 8px 0; font-size: 12px; }
+  .footer-controls { gap: 2px; }
+  #simple-view, #motion { min-width: 44px; min-height: 44px; max-width: 76px; padding: 8px 6px; font-size: 10px; line-height: 1.3; }
+
+  /* ---- The reading sheet ---- */
+  main { padding-top: var(--mobile-horizon); padding-bottom: var(--mobile-footer); }
+  .chapter, .chapter:first-child, .chapter:last-child, #contact { display: block; min-height: 0; padding: 30px 22px 46px; background: none; }
+  .chapter + .chapter { border-top: 1px solid #173d4018; }
+  /* Each chapter is at least one screen of reading, so every island gets its moment in the window. */
+  .chapter { min-height: calc(100svh - var(--mobile-horizon) - var(--mobile-footer)); }
+  #contact { padding-bottom: 64px; }
+  .world-copy, .intro, #about .world-copy, #water7 .world-copy, #projects .world-copy, #egghead .world-copy { width: 100%; max-width: none; margin: 0; }
+  .eyebrow, .discovery .eyebrow, .log-entry .eyebrow, .skill-stop .eyebrow { font-size: 10px; line-height: 1.7; letter-spacing: .08em; }
+  .world-copy p, .discovery-copy p, #egghead .log-entry p { max-width: none; font-size: 16px; line-height: 1.75; }
+
+  #foosha h1 { margin-bottom: 20px; font-size: clamp(54px, 16.5vw, 76px); line-height: .98; }
+  #foosha .eyebrow { margin-bottom: 18px; color: #9c5039; }
+  #foosha .world-copy > p { font-size: 17px; line-height: 1.65; }
+  .intro-location { display: inline-block; margin-top: 12px; font-size: 11px; line-height: 1.7; }
+  .primary {
+    display: inline-flex; align-items: center; min-height: 48px; margin: 4px 14px 8px 0; padding: 12px 18px;
+    background: #173d40; color: #f4f0df; border: 0; border-radius: 3px; font-size: 12px;
+  }
+  .primary:hover { background: #245255; color: #fff; }
+  .quick-work, .return { display: inline-flex; align-items: center; min-height: 44px; margin: 0; font-size: 12px; }
+  .hint { margin-top: 20px; font-size: 9px; line-height: 1.7; }
+  .world-copy > h2 { max-width: 100%; margin-bottom: 26px; font-size: clamp(34px, 9.6vw, 42px); line-height: 1.07; letter-spacing: -.04em; }
+
+  .about-moment, .about-moment[data-side=right] { width: 100%; min-height: 0; margin: 0 0 18px; padding: 8px 0; }
+  .about-moment .lead { font: 27px/1.4 Georgia, serif; }
+  .about-moment p { font-size: 17px; }
+  .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; min-height: 0; margin: 0; padding: 18px 0 8px; }
+  .facts b { font-size: 44px; }
+  .facts span { font-size: 9px; letter-spacing: 0; }
+
+  .skill-list > .skill-stop, .skill-stop:nth-child(5) { width: 100%; min-height: 0; margin: 0; padding: 22px 0 28px; gap: 24px; border-top: 1px solid #173d4020; }
+  .skill-stop h3 { margin-bottom: 10px; font: 27px/1.15 Georgia, serif; }
+  .skill-stop p { max-width: none; font: 14px/1.9 Arial, sans-serif !important; }
+
+  .sky-ledger { width: 100%; min-height: 0; padding: 4px 0 34px; }
+  .ledger-row { gap: 8px; margin-bottom: 24px; }
+  .ledger-tile { padding: 16px 10px 12px; }
+  .ledger-tile b { font-size: 40px; }
+  .ledger-tile span { font-size: 9px; letter-spacing: 0; }
+  .ledger-tile small { font-size: 9px; }
+  .ledger-best li { flex-wrap: wrap; gap: 4px 12px; font-size: 18px; }
+  .ledger-best small { margin-left: 26px; text-align: left; }
+
+  .discovery, .discovery[data-composition=wide], .discovery[data-composition=elevated], .discovery[data-side=right] {
+    display: flex; flex-direction: column; align-items: stretch; gap: 0; min-height: 0; margin: 0; padding: 30px 0 40px;
+    border-top: 1px solid #173d4020; perspective: none;
+  }
+  .discovery:first-of-type { margin-top: 0; }
+  .discovery-copy, .discovery[data-side=right] .discovery-copy { display: contents; }
+  .discovery-copy > .eyebrow { order: 0; margin-bottom: 12px; }
+  .discovery-copy > .project-badge { order: 0; }
+  .discovery-copy > h3 { order: 1; margin: 0 0 20px; font-size: clamp(31px, 9vw, 38px); line-height: 1.12; overflow-wrap: anywhere; }
+  .discovery .project-artifact, .discovery[data-composition=elevated] .project-artifact, .discovery[data-side=right] .project-artifact {
+    order: 2; align-self: stretch; width: 100%; max-width: none; margin: 0 0 20px; transform: none !important;
+  }
+  .discovery-copy > p { order: 3; margin-bottom: 16px; }
+  .discovery-copy > .highlights { order: 4; font-size: 14px; line-height: 1.75; }
+  .discovery-copy > .tags { order: 5; gap: 6px 12px; margin-bottom: 16px; }
+  .discovery-copy > .project-links { order: 6; }
+  .tags span { font-size: 11px; line-height: 1.7; }
+  .tags span:not(:last-child)::after { margin-left: 6px; }
+  .project-links, .contact-links { flex-wrap: wrap; gap: 6px 22px; }
+  .project-link, .contact-links a { display: inline-flex; align-items: center; min-height: 44px; font-size: 13px; }
+  .artifact-open, .discovery[data-side=right] .artifact-open, .artifact-open:hover, .discovery[data-side=right] .artifact-open:hover {
+    transform: none; filter: drop-shadow(0 8px 12px #173d401c);
+  }
+  .artifact-open::before, .artifact-open::after, .artifact-coordinate { display: none; }
+  .artifact-open:has(img) { padding-bottom: 28px; }
+  .artifact-open img { border-radius: 3px; }
+  .artifact-cue { font: 11px monospace !important; }
+  .project-artifact figcaption { margin-top: 10px; font-size: 10px; line-height: 1.6; opacity: .8; }
+
+  #egghead .log-entry, #egghead .log-entry[data-side=right] { width: 100%; min-height: 0; margin: 0; padding: 22px 0 28px; border-top: 1px solid #173d4020; }
+  #egghead .log-entry::before, #egghead .log-entry::after { display: none; }
+  .log-entry h3 { font-size: 29px; }
+  .cert-list { columns: 1; }
+  .cert-list li { padding: 12px 0; border-bottom: 1px solid #173d4015; font-size: 15px; }
+  .cert-list strong { font-size: 12px; }
+  .contact-email { display: inline-block; min-height: 44px; font-size: clamp(17px, 5vw, 23px); }
+  .credits { margin-top: 28px !important; }
+
+  /* ---- Look around, crew and ship: the window grows to fill the screen ---- */
+  .exploring #scene {
+    height: calc(100dvh - var(--mobile-header) - var(--mobile-footer)); pointer-events: auto; touch-action: none;
+  }
+  .exploring #scene::after { display: none; }
+  .exploring #landmark { display: none; }
+  #explore-help { top: calc(var(--mobile-header) + 12px); left: 16px; right: 76px; transform: none; width: auto; max-width: none; padding: 10px 12px; text-align: left; font-size: 12px; }
+  #crew-panel { left: 16px; right: 16px; bottom: calc(var(--mobile-footer) + 12px); max-width: none; padding: 14px 16px; background: #edf0dff2; text-shadow: none; }
+  #crew-panel::before { display: none; }
+  #crew-panel h2 { margin: 4px 0 12px; font-size: 26px; }
+  #crew-panel button, #crew-select { min-height: 44px; font-size: 13px; }
+  #crew-panel p { font-size: 11px; }
+  #mobile-exit {
+    position: fixed; z-index: 12; right: 16px; top: calc(var(--mobile-header) + 12px); min-height: 44px; padding: 8px 12px;
+    background: var(--sheet); border: 1px solid #8c9e88; font: 12px monospace;
+  }
+  body:not(.exploring) #mobile-exit { display: none; }
+
+  /* ---- Dialogs ---- */
+  #map-dialog {
+    width: 100%; max-width: none; height: 100dvh; max-height: none; margin: 0; border: 0; background: var(--sheet);
+    padding: calc(16px + env(safe-area-inset-top, 0px)) 22px calc(30px + env(safe-area-inset-bottom, 0px));
+  }
+  #map-close { min-width: 44px; min-height: 44px; }
+  #map-dialog h2 { font-size: 36px; }
+  .map-grid { grid-template-columns: 1fr; gap: 0; }
+  .map-grid button { grid-template-columns: 28px 1fr; gap: 2px 12px; min-height: 68px; padding: 14px 0; }
+  .map-grid span { grid-row: 1 / 3; align-self: center; font-size: 11px; }
+  .map-grid strong { font-size: 23px; line-height: 1.2; }
+  .map-grid small { font-size: 11px; }
+  .mobile-chart-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; padding-top: 20px; border-top: 1px solid #173d4020; }
+  .mobile-chart-actions button, .mobile-chart-actions a {
+    display: inline-flex; align-items: center; min-height: 46px; padding: 10px 14px; background: none; border: 1px solid #173d4040; font: 12px monospace; color: #173d40;
+  }
+  #artifact-view, #archive-dialog { padding: calc(12px + env(safe-area-inset-top, 0px)) 18px calc(40px + env(safe-area-inset-bottom, 0px)); overscroll-behavior: contain; }
+  #artifact-close, #archive-close { position: sticky; top: 0; z-index: 2; width: 100%; min-height: 48px; margin-bottom: 22px; background: #e8ecdc; font-size: 12px; text-align: left; }
+  .artifact-view-layout { display: flex; flex-direction: column; align-items: stretch; gap: 26px; }
+  .artifact-story h2 { font-size: 34px; }
+  .artifact-story p { font-size: 16px; line-height: 1.75; }
+  .artifact-pagination { flex-wrap: wrap; gap: 12px; font-size: 11px; line-height: 1.5; }
+  #artifact-visual { max-height: 62dvh; overflow: auto; overscroll-behavior: contain; touch-action: pan-x pan-y pinch-zoom; }
+  #artifact-visual.artifact-zoomed img { width: 960px; max-width: none; height: auto; max-height: none; }
+  #artifact-zoom { min-height: 44px; padding: 8px 12px; background: none; border: 1px solid #8c9e88; font: 12px monospace; color: #173d40; }
+  .archive-grid { grid-template-columns: 1fr; gap: 16px; }
+
+  /* ---- Reading view: no window, just the page ---- */
+  .reading-view main { padding-top: var(--mobile-header); }
+  .reading-view .chapter { min-height: 0; }
+  .reading-view .spatial-moment { margin: 20px 0 !important; }
 }
-/* Short landscape screens need less chrome and a compact hero. */
-@media(max-height:500px) and (pointer:coarse){
- :root{--mobile-header:48px;--mobile-stage:80px;--mobile-footer:52px}
- #foosha h1{font-size:48px;margin-bottom:18px}#foosha h1 br{display:none}#foosha h1 em{margin-left:12px}
- .chapter:first-child{padding-top:calc(var(--mobile-horizon) + 18px)}.world-copy>h2{font-size:32px;margin-bottom:20px}
- .world-copy p{font-size:15px}.intro .eyebrow{margin-bottom:16px}
- .exploring #crew-panel{left:auto;right:18px;width:300px;padding:12px}.exploring #crew-panel h2{font-size:23px}.exploring #crew-panel>.eyebrow{display:none}#crew-panel p{margin-top:8px}
+
+/* Small phones. */
+@media (max-width: 360px) {
+  header { padding-inline: 12px; }
+  header .brand small { font-size: 8px; }
+  .chapter, .chapter:first-child { padding-inline: 18px; }
+  #destination { max-width: 145px; }
+  .facts span { font-size: 8px; }
 }
-/* Phone reading flow: the world appears between chapters; content uses the full screen. */
-@media(max-width:700px), (max-height:500px) and (pointer:coarse){
- :root{--mobile-stage:clamp(240px,43svh,390px);--mobile-header:60px;--mobile-footer:calc(60px + env(safe-area-inset-bottom,0px))}
- body{background:#b8ddd7}body:not(.reading-view) main{clip-path:none!important;pointer-events:auto}
- header{background:#eef1e5fa;border-bottom:1px solid #173d4012;padding-inline:22px}
- header .brand small{display:block;font:9px/1.5 monospace;letter-spacing:.06em;margin-left:5px}header .brand small i{display:none}header .brand{font-size:30px;gap:12px}
- header nav{gap:8px}header nav #crew-open,header nav #inspect-sunny{display:none}header nav a[data-sail=projects]{display:inline-flex;font:12px monospace;min-height:44px;align-items:center;padding-inline:4px}
- #scene{z-index:0;height:var(--mobile-stage)}.vignette{display:none}
- #landmark{z-index:1;top:calc(var(--mobile-header) + 18px)!important;font-size:19px;left:22px!important;max-width:calc(100vw - 44px)}#landmark small{font-size:10px}
- .chapter,.chapter:first-child{padding:calc(var(--mobile-horizon) + 20px) 24px 54px;min-height:0;background:linear-gradient(to bottom,transparent calc(var(--mobile-horizon) - 28px),#edf0df var(--mobile-horizon));position:relative}
- .chapter+.chapter,.chapter:last-child,#contact{padding:calc(var(--mobile-stage) + 24px) 24px 54px;background:linear-gradient(to bottom,transparent calc(var(--mobile-stage) - 28px),#edf0df var(--mobile-stage));min-height:0}
- .chapter:first-child{padding-bottom:48px}#contact{padding-bottom:calc(var(--mobile-footer) + 40px)}
- .chapter .world-copy{position:relative;margin:0;max-width:none}.world-copy>h2{font-size:39px;line-height:1.07;letter-spacing:-.045em;margin-bottom:30px}
- #foosha h1{font-size:clamp(58px,18vw,78px);margin-bottom:22px}#foosha .eyebrow{color:#9c5039;font-size:10px;margin-bottom:22px}#foosha .world-copy>p{font-size:17px;line-height:1.65}.intro-location{font-size:11px;margin-top:14px}
- .primary{padding:12px 18px;background:#173d40;color:#f4f0df;border:0;border-radius:3px;font-size:12px;margin:4px 0 8px;min-height:48px}.primary:hover{background:#245255;color:#fff}.quick-work{margin:0 0 0 16px;font-size:12px}.hint{font-size:9px;margin-top:22px}
- .about-moment{margin-bottom:18px}.about-moment .lead{font-size:28px}.facts{padding-top:20px;gap:10px}.facts b{font-size:44px}.facts span{font-size:9px}
- .skill-list>.skill-stop,.skill-stop:nth-child(5){padding:24px 0 30px;border-top:1px solid #173d4020;gap:26px}.skill-stop h3{font:27px/1.15 Georgia,serif;margin-bottom:12px}.skill-stop .eyebrow{font-size:10px}.skill-stop p{font:14px/1.9 Arial,sans-serif!important}
- .discovery,.discovery[data-composition=wide],.discovery[data-prominence=featured]{display:flex;gap:0;padding:32px 0 44px;margin:0;border-top:1px solid #173d4020}
- .discovery-copy{display:contents}.discovery-copy>.eyebrow{order:0;margin-bottom:14px}.discovery-copy>h3{order:1;font-size:36px;line-height:1.12;margin:0 0 22px}.project-artifact{order:2;margin:0 0 22px!important}.discovery-copy>p{order:3;margin-bottom:18px}.discovery-copy>.highlights{order:4}.discovery-copy>.tags{order:5}.discovery-copy>.project-links{order:6}
- .artifact-coordinate{display:none}.artifact-open::before,.artifact-open::after{display:none}.artifact-open:has(img){padding-bottom:28px}.artifact-open img{border-radius:3px}.artifact-cue{font:11px monospace!important}.project-artifact figcaption{font-size:10px;opacity:.8;margin-top:10px}
- .tags span{font-size:11px}.highlights{font-size:14px}.project-links{gap:22px}.project-link{font-size:13px}
- #egghead .log-entry{padding:24px 0 30px;border-top:1px solid #173d4020;margin-bottom:0}.cert-list li{padding:12px 0;border-bottom:1px solid #173d4015}
- footer{background:#edf0dffa;padding-inline:14px;box-shadow:0 -5px 20px #173d4008}#destination{font-size:12px;max-width:180px}.footer-controls{gap:2px}#simple-view,#motion{font-size:10px}
- .mobile-chart-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px;padding-top:20px;border-top:1px solid #173d4020}.mobile-chart-actions button,.mobile-chart-actions a{min-height:46px;padding:10px 14px;border:1px solid #173d4040;background:none;font:12px monospace;color:#173d40;display:inline-flex;align-items:center}
- .exploring #scene{height:calc(100dvh - var(--mobile-header) - var(--mobile-footer));z-index:3}.exploring #crew-panel{z-index:12}
- .reading-view .chapter,.reading-view .chapter:first-child,.reading-view .chapter+.chapter{background:#edf0df;padding-top:80px}.reading-view .discovery{gap:0}.reading-view .discovery-copy{display:contents}
+
+/* Phones held sideways: a shorter window and tighter headings. */
+@media (max-height: 500px) and (pointer: coarse) {
+  :root { --mobile-header: calc(46px + env(safe-area-inset-top, 0px)); --mobile-stage: 44svh; --mobile-footer: calc(48px + env(safe-area-inset-bottom, 0px)); }
+  #landmark small { display: none; }
+  #foosha h1 { font-size: 46px; }
+  #foosha h1 br { display: none; }
+  #foosha h1 em { margin-left: 12px; }
+  .world-copy { max-width: 660px !important; margin-inline: auto !important; }
+  .world-copy > h2 { font-size: 30px; }
+  .exploring #crew-panel { left: auto; width: 300px; padding: 12px; }
 }
-@media(min-width:701px) and (min-height:501px), (min-width:701px) and (pointer:fine){.mobile-chart-actions{display:none}}
-@media(max-height:500px) and (pointer:coarse){:root{--mobile-stage:180px}#foosha h1{font-size:52px}.chapter:first-child{padding-top:calc(var(--mobile-horizon) + 18px)}.world-copy{max-width:650px!important;margin-inline:auto!important}.exploring #crew-panel{width:300px}.discovery .project-artifact{max-width:560px}}
-@media(max-width:360px){header{padding-inline:16px}header .brand small{font-size:8px}.chapter,.chapter+.chapter{padding-inline:20px}.quick-work{margin-left:0;display:flex}#destination{max-width:145px}.facts span{font-size:8px}}
-@media(max-width:700px), (max-height:500px) and (pointer:coarse){.discovery,.discovery[data-composition=wide],.discovery[data-prominence=featured]{align-items:stretch}.project-artifact{align-self:stretch}.chapter:first-child{--mobile-stage:clamp(220px,38svh,340px)}}
-@media(max-width:700px), (max-height:500px) and (pointer:coarse){.sky-ledger{width:100%;min-height:0;padding:8px 0 40px}.ledger-row{gap:8px;margin-bottom:26px}.ledger-tile{padding:16px 10px 12px}.ledger-tile b{font-size:40px}.ledger-tile span{font-size:9px;letter-spacing:0}.ledger-tile small{font-size:9px}.ledger-best li{font-size:18px;flex-wrap:wrap;gap:4px 12px}.ledger-best small{margin-left:26px;text-align:left}#archive-dialog{padding:calc(14px + env(safe-area-inset-top,0px)) 18px 56px}#archive-close{margin-bottom:28px}.archive-grid{grid-template-columns:1fr;gap:16px}}
+
+/* Desktop never shows the phone-only controls. */
+@media (min-width: 701px) and (min-height: 501px), (min-width: 701px) and (pointer: fine) {
+  #artifact-zoom, #mobile-exit, .mobile-chart-actions { display: none; }
+}

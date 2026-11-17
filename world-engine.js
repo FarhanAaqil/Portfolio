@@ -49,6 +49,7 @@ scene.add(sun, sun.target);
 
 const kit = createKit(scene), {mesh, sphere, rod} = kit;
 const UP = new T.Vector3(0, 1, 0);
+const PHONE = {aim: .62, back: 1.05, lift: 4};   // phone camera framing
 
 // The sea: a displaced surface with moving glints, fading into the horizon haze.
 const waterMat = new T.ShaderMaterial({
@@ -214,9 +215,12 @@ function paint(now) {
     camPos.copy(lookAt).add(orbit);
   }
   if (mobile()) {
-    camPos.y += 6;
-    camPos.add(tmp.copy(eyeOffset).setY(0).normalize().multiplyScalar(8));
-    lookAt.lerp(tmp.copy(ship.position).add(new T.Vector3(0, 5, 0)), .2);
+    // The phone window is short and wide: aim between the Sunny and the island and
+    // step back, so the ship is always in the foreground with the island behind her.
+    const reach = camPos.clone().sub(lookAt);
+    lookAt.lerp(tmp.copy(ship.position).add(new T.Vector3(0, 2, 0)), PHONE.aim);
+    camPos.copy(lookAt).addScaledVector(reach, PHONE.back);
+    camPos.y += PHONE.lift;
   }
   if (inspectShip) {
     lookAt.copy(ship.position).add(new T.Vector3(0, 5, 0));

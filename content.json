@@ -248,7 +248,12 @@
           "FastAPI",
           "RAG"
         ],
-        "github": "https://github.com/FarhanAaqil/Sheet-AI"
+        "github": "https://github.com/FarhanAaqil/Sheet-AI",
+        "thumb": {
+          "src": "assets/projects/thumbs/sheetsense-ai.webp",
+          "alt": "SheetSense AI workspace",
+          "width": 640
+        }
       },
       {
         "title": "LemonHost Monitor",
@@ -374,7 +379,12 @@
           "Session Persistence"
         ],
         "github": "https://github.com/FarhanAaqil/interviewpro",
-        "demo": "https://claude.ai/public/artifacts/367d3360-5eab-4ff9-afe4-73b7c3050802"
+        "demo": "https://claude.ai/public/artifacts/367d3360-5eab-4ff9-afe4-73b7c3050802",
+        "thumb": {
+          "src": "assets/projects/thumbs/interviewpro.webp",
+          "alt": "InterviewPro practice",
+          "width": 640
+        }
       },
       {
         "title": "Samisthi Aranya Resorts",

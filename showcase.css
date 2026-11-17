@@ -50,3 +50,12 @@ button.ledger-tile::after{content:'OPEN';position:absolute;top:-9px;right:10px;p
 .archive-card p{margin:0;font-size:14px;line-height:1.7}
 .archive-card .tags{display:flex;flex-wrap:wrap;gap:4px 12px;margin:auto 0 0;padding-top:8px}
 .archive-card .project-links{flex-wrap:wrap;gap:8px 20px}
+
+/* Egghead: honors and achievements. */
+.honor-list{list-style:none;margin:6px 0 0;padding:0}
+.honor-list li{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:baseline;padding:16px 0;border-bottom:1px solid #173d401c}
+.honor-list li:first-child{border-top:1px solid #173d401c}
+.honor-result{grid-row:1/3;align-self:start;margin-top:3px;padding:4px 8px;background:#a45536;color:#fff6e0;font:9px/1.4 monospace;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
+.honor-list strong{font:21px/1.25 Georgia,serif}
+.honor-list small{font:10px monospace;letter-spacing:.1em;color:#7c583e}
+.honor-list p,.honor-list .project-link{grid-column:2;margin:6px 0 0!important;font-size:14px!important;line-height:1.7!important}

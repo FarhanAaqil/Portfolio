@@ -177,8 +177,19 @@
       ],
       "github": "https://github.com/FarhanAaqil/NebulaLM",
       "demo": null,
-      "screenshot": null,
-      "secondaryScreenshots": []
+      "screenshot": {
+        "src": "assets/projects/nebulalm/title.webp",
+        "alt": "NebulaLM — a small astronomy language model and a study of what it learns, stores and leaks",
+        "caption": "NebulaLM — research presentation title slide",
+        "width": 1280,
+        "height": 717
+      },
+      "secondaryScreenshots": [],
+      "thumb": {
+        "src": "assets/projects/thumbs/nebulalm.webp",
+        "alt": "NebulaLM title slide",
+        "width": 640
+      }
     },
     {
       "id": "visentra",
@@ -437,6 +448,28 @@
     {
       "issuer": "SkillUp",
       "title": "C++ Programming"
+    }
+  ],
+  "honors": [
+    {
+      "date": "2026",
+      "title": "Internal Smart India Hackathon 2026",
+      "result": "1st place",
+      "note": "Won the college's internal round of SIH 2026."
+    },
+    {
+      "date": "2025",
+      "title": "Internal Smart India Hackathon 2025",
+      "result": "1st place",
+      "note": "Won the college's internal round of SIH 2025."
+    },
+    {
+      "date": "Oct 2026",
+      "title": "XERJ Corpus Hub contributor",
+      "result": "Selected work",
+      "note": "The Autonomous Orchestrator Agent was selected for the XERJ Corpus Hub, the open reference memory AI coding agents search before they write code.",
+      "url": "https://hub.xerj.org/contributors/FarhanAaqil",
+      "linkLabel": "View on XERJ Hub"
     }
   ],
   "skills": [

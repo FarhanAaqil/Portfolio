@@ -88,6 +88,11 @@ replace('archive', archiveGroups.map(group =>
       + (links ? `<div class="project-links">${links}</div>` : '') + `</li>`;
   }).join('')}</ul></section>`).join(''));
 
+// Egghead: honors and achievements.
+replace('honors', `<article class="log-entry spatial-moment honors" data-side="right"><span class="eyebrow">HONORS &amp; ACHIEVEMENTS</span><h3>Wins along the way.</h3><ul class="honor-list">${data.honors.map(h =>
+  `<li><span class="honor-result">${esc(h.result)}</span><strong>${esc(h.title)}</strong><small>${esc(h.date)}</small><p>${esc(h.note)}</p>`
+  + (h.url ? external(h.url, h.linkLabel || 'View') : '') + '</li>').join('')}</ul></article>`);
+
 // Egghead: certifications and the current role.
 replace('certifications', `<ul class="cert-list">${data.certifications.map(c => `<li><strong>${esc(c.issuer)}</strong><span>${esc(c.title)}</span></li>`).join('')}</ul>`);
 const role = data.currentRole;
